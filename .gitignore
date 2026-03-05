@@ -1,0 +1,22 @@
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs and Editors
+.visualstudio
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Folders to avoid (common ones)
+node_modules/
+__pycache__/
+bin/
+obj/
+dist/
