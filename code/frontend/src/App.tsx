@@ -26,6 +26,28 @@ function App() {
         </div>
       </div>
       <hr/>
+      <div >
+        <div className="bottom_holder">
+        <div className="info_block">
+          <div className="info_title">
+            <img src="icons/Barbell_64.png" className="Icons" alt="icon"/>
+            <span>Težavnost</span>
+          </div>
+          <div className="info_value">4/10</div>
+        </div>
+
+        <div className="info_block">
+          <div className="info_title">
+            <img src="icons/Duration_64.png" className="Icons" alt="icon"/>
+            <span>Predviden čas</span>
+          </div>
+          <div className="info_value">2-3 ure</div>
+        </div>
+        </div>
+        <div className="btn_wrapper">
+           <button className="Btn_close" onClick={() => window.close()}>Zapri</button>
+        </div>
+      </div>
     </>
   )
 }

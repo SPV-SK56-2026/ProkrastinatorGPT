@@ -137,4 +137,54 @@ li {
 li::marker {
   color: #221f20;
 }
+.bottom_holder{
+  margin-top: 1em;
+  padding: 0 1em;
+  display: flex;
+  justify-content: space-around; 
+  gap: 2em;
+}
 
+.info_block{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info_title{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: medium;
+  font-weight: bold;
+  color: #3d3d3d;
+}
+
+.info_value{
+  font-size: medium;
+  font-weight: bold;
+  align-items: center;
+  color: #3d3d3d;
+}
+
+.Icons{
+  width: 32px;
+  height: 32px;
+  color: #3d3d3d;
+}
+
+.Btn_close{
+  color: white;
+  background-color: #3A2F7A;
+  font-size: medium;
+  height: 35px;
+  width: 100px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+}
+.btn_wrapper {
+  display: flex;
+  justify-content: right;
+  margin-top: 1.5em;
+}
