@@ -10,8 +10,9 @@ Tukaj se nahaja vsa koda za uporabniški vmesnik.
 ## Gradnja razširitve
 
 Zaženi:
-
+```
 *npm run build*
+```
 
 Ta ukaz ustvari mapo `dist`.
 
