@@ -11,7 +11,7 @@ Tukaj se nahaja vsa koda za uporabniški vmesnik.
 
 Zaženi:
 ```
-*npm run build*
+npm run build
 ```
 
 Ta ukaz ustvari mapo `dist`.
