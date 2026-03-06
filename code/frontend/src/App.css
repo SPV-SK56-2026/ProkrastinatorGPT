@@ -1,9 +1,21 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 350px;
+  min-height: 500px;
+  padding: 1rem;
 }
+
+@font-face {
+  font-family: Aptos;
+  src: url("font/Aptos.ttf");
+}
+body{
+  background-color: #f5f5f5;
+  color: #221f20;
+  font-size: medium;
+  font-weight: 500;
+  font-family: Aptos, sans-serif;
+}
+
 
 .logo {
   height: 6em;
@@ -37,10 +49,142 @@
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
+
+#titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 1rem;
 }
-body {
-  min-width: 400px;
-  min-height: 500px;
+
+#title {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+#titleIcon{
+   width: 32px; 
+   height: 32px;
+}
+
+hr {
+  color: #b2b2b2;
+  background-color: #b2b2b2;
+  border:none;
+  height:1px;
+}
+
+
+.orangeText{
+  font-weight: bold;
+  color: #D66328;
+}
+
+.blueText{
+  color: #3A2F7A;
+  font-size: medium;
+}
+
+.blueTitle {
+  font-size: large;
+  color: #3A2F7A;
+  font-weight: bold;
+  margin-top: 0.1em;
+  margin-bottom: 0;
+}
+
+.subText{
+  color: #3c3c3c;
+  font-size: smaller;
+}
+
+#description{
+  padding: 1em;
+}
+
+.holder{
+  margin-top: 1em;
+  padding: 0 1em;
+}
+
+#blueHolder{
+  background-color: #3A2F7A;
+  border-radius: 15px;
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.35);
+  margin-bottom: 1em;
+}
+#blueTextHolder{
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  padding: 15px;
+  margin-left: 10px;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.2em;
+  margin-top: 0.2em;
+  margin-bottom: 0;
+}
+
+li {
+  color: #221f20;
+  padding-left: 0.3em;
+  margin-bottom: 0.5em;
+}
+
+li::marker {
+  color: #221f20;
+}
+.bottomHolder {
+  margin-top: 1em;
+  padding: 0 1em;
+  display: flex;
+  justify-content: space-around; 
+  gap: 2em;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.infoTitle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: medium;
+  font-weight: bold;
+  color: #3d3d3d;
+}
+
+.infoValue {
+  font-size: medium;
+  font-weight: bold;
+  align-items: center;
+  color: #3d3d3d;
+}
+
+.icons {
+  width: 32px;
+  height: 32px;
+  color: #3d3d3d;
+}
+
+.btnClose {
+  color: white;
+  background-color: #3A2F7A;
+  font-size: medium;
+  height: 35px;
+  width: 100px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+}
+.btnWrapper {
+  display: flex;
+  justify-content: right;
+  margin-top: 1.5em;
 }
