@@ -1,16 +1,22 @@
 //import { useState } from 'react'
 import './App.css'
 
-function App() {
+function App(){
   return (
     <>
       <div>
-        <div id="titleContainer"><img src="icons/icon.png" id="titleIcon" alt="icon"/> <span id="title">ProkrastinatorGPT</span></div>
-	    </div>
-      <hr/>
+        <div id="titleContainer">
+          <img src="icons/icon.png" id="titleIcon" alt="icon" />
+          <span id="title">ProkrastinatorGPT</span>
+        </div>
+      </div>
+
+      <hr />
+
       <div className="holder">
         Naloga zahteva izdelavo <span className="orangeText">organizacijskega diagrama podjeta</span>, ki prikazuje strukturo in naloge posameznikov ali oddelkov. <span className="orangeText">Priložiti je treba log chata</span>, ki dokazuje, da so vsi člani ekipe sodelovali in oddali isto datoteko.
       </div>
+
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
@@ -25,7 +31,37 @@ function App() {
           </div>
         </div>
       </div>
-      <hr/>
+
+      <hr />
+
+      <div>
+        <div className="bottomHolder">
+          <div className="infoBlock">
+            <div className="infoTitle">
+              <img src="icons/Barbell_64.png" className="icons" alt="icon" />
+              <span>Težavnost</span>
+            </div>
+            <div className="infoValue">4/10</div>
+          </div>
+
+          <div className="infoBlock">
+            <div className="infoTitle">
+              <img src="icons/Duration_64.png" className="icons" alt="icon" />
+              <span>Predviden čas</span>
+            </div>
+            <div className="infoValue">2-3 ure</div>
+          </div>
+        </div>
+
+        <div className="btnWrapper">
+          <button
+            className="btnClose"
+            onClick={(): void => window.close()}
+          >
+            Zapri
+          </button>
+        </div>
+      </div>
     </>
   )
 }
