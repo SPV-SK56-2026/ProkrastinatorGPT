@@ -137,7 +137,7 @@ li {
 li::marker {
   color: #221f20;
 }
-.bottom_holder{
+.bottomHolder {
   margin-top: 1em;
   padding: 0 1em;
   display: flex;
@@ -145,13 +145,13 @@ li::marker {
   gap: 2em;
 }
 
-.info_block{
+.infoBlock {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.info_title{
+.infoTitle {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -160,20 +160,20 @@ li::marker {
   color: #3d3d3d;
 }
 
-.info_value{
+.infoValue {
   font-size: medium;
   font-weight: bold;
   align-items: center;
   color: #3d3d3d;
 }
 
-.Icons{
+.icons {
   width: 32px;
   height: 32px;
   color: #3d3d3d;
 }
 
-.Btn_close{
+.btnClose {
   color: white;
   background-color: #3A2F7A;
   font-size: medium;
@@ -183,7 +183,7 @@ li::marker {
   cursor: pointer;
   border: none;
 }
-.btn_wrapper {
+.btnWrapper {
   display: flex;
   justify-content: right;
   margin-top: 1.5em;
