@@ -1,10 +1,18 @@
 {
   "manifest_version": 3,
   "name": "ProkrastinatorGPT",
+  "icons": {
+     "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "version": "1.0",
   "description": "ProkratintorGPT",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "permissions": []
 }
