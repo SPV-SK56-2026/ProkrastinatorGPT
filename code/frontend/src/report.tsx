@@ -1,17 +1,12 @@
 //import { useState } from 'react'
 import './App.css'
+import Header from './header'
 
 function Report(){
   return (
     <div>
 
-      <div id="titleContainer">
-        <img src="icons/icon.png" id="titleIcon" alt="icon" />
-        <span id="title">ProkrastinatorGPT</span>
-      </div>
-
-      <hr />
-
+      <Header />
    
       <div id="titleContainer">
         <span id="title">Prijavi napako</span>

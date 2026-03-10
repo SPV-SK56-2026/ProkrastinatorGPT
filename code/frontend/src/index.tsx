@@ -1,17 +1,12 @@
 //import { useState } from 'react'
 import './App.css'
+import Header from './header'
 
 function Index(){
+
   return (
     <>
-      <div>
-        <div id="titleContainer">
-          <img src="icons/icon.png" id="titleIcon" alt="icon" />
-          <span id="title">ProkrastinatorGPT</span>
-        </div>
-      </div>
-
-      <hr />
+      <Header />
 
       <div className="holder description">
         Naloga zahteva izdelavo <span className="orangeText">organizacijskega diagrama podjeta</span>, ki prikazuje strukturo in naloge posameznikov ali oddelkov. <span className="orangeText">Priložiti je treba log chata</span>, ki dokazuje, da so vsi člani ekipe sodelovali in oddali isto datoteko.
