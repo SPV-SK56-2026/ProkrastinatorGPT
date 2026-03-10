@@ -14,6 +14,9 @@ desktop.ini
 *.log
 *.sqlite
 
+# Environment variables
+.env
+
 # Folders to avoid (common ones)
 node_modules/
 __pycache__/
