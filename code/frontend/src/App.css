@@ -67,6 +67,10 @@ body{
    width: 32px; 
    height: 32px;
 }
+#bugIcon{
+  width: 28px;
+  height:28px;
+}
 
 hr {
   color: #b2b2b2;
@@ -84,6 +88,7 @@ hr {
 .blueText{
   color: #3A2F7A;
   font-size: medium;
+  font-weight: bold;
 }
 
 .blueTitle {
@@ -101,6 +106,10 @@ hr {
 
 #description{
   padding: 1em;
+}
+
+.description{
+  font-size: large;
 }
 
 .holder{
@@ -158,6 +167,7 @@ li::marker {
   font-size: medium;
   font-weight: bold;
   color: #3d3d3d;
+  height: 32px;
 }
 
 .infoValue {
@@ -167,10 +177,18 @@ li::marker {
   color: #3d3d3d;
 }
 
-.icons {
+.barbellIcon {
   width: 32px;
   height: 32px;
   color: #3d3d3d;
+  opacity: 75%;
+}
+
+.clockIcon{
+  width: 22px;
+  height: 22px;
+  color: #3d3d3d;
+  opacity: 75%;
 }
 
 .btnClose {
@@ -182,9 +200,67 @@ li::marker {
   border-radius: 15px;
   cursor: pointer;
   border: none;
+
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.25);
 }
 .btnWrapper {
   display: flex;
   justify-content: right;
   margin-top: 1.5em;
+}
+
+
+.cardContainer{
+  background: #f1f1f1;
+  border-radius: 25px;
+  padding: 1rem;
+  box-shadow: 0px 10px 25px rgba(0,0,0,0.25);
+  
+}
+.inputContainer{
+  padding: 0 1rem;
+  margin-top: 1rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.label{
+  font-size: small;
+  color: #4a4a4a;
+  align-self: flex-start;
+  margin-left: -5px;
+}
+.textInput{
+  width: 100%;
+  height: 90px;
+  border-radius: 18px;
+  border: none;
+  padding: 12px;
+
+  font-family: Aptos, sans-serif;
+  background: #e7e7e7;
+
+  resize: none;
+  outline: none;
+
+  align-self: center;
+}
+.btnSubmit{
+  width: 100%;
+  height: 45px;
+  margin-top: 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #D66328;
+  color: white;
+  font-size: large;
+  font-weight: bold;
+  cursor: pointer;
+
+  box-shadow: 0px 5px 10px rgba(0,0,0,0.25);
+}
+
+.btnSubmit:hover{
+  opacity: 0.9;
 }
