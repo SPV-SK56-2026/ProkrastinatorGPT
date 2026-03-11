@@ -1,5 +1,6 @@
 //var UserModel = // TO DO
 const UserModel = require('../db/repositories/UserRepository');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
 
@@ -39,13 +40,15 @@ module.exports = {
                 return res.status(409).json({ message: 'Email already registered' });
             }
 
-            // Hash the password TO DO!
+            // Hash the password 
+            const salt = await bcrypt.genSalt(10);
+            const hashed = await bcrypt.hash(password, salt);
 
            // Save to DB
             const newUser = await UserModel.create({
                 username,
                 email,
-                password_hash: password
+                password_hash: hashed
             });
 
             return res.status(201).json(newUser);
