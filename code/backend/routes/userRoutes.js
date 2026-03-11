@@ -6,7 +6,9 @@ router.get('/register', userController.showRegister);
 router.get('/login', userController.showLogin);
 router.get('/profile', userController.profile);
 router.get('/logout', userController.logout);
+router.get('/list', userController.list);
 router.get('/:id', userController.show);
+
 
 router.post('/', userController.create);
 router.post('/login', userController.login);

@@ -1,12 +1,18 @@
 //var UserModel = // TO DO
+const UserModel = require('../db/repositories/UserRepository');
 
 module.exports = {
 
     /**
      * userController.list()
      */
-    list: function (req, res) {
-        //TO DO
+    list: async function (req, res) {
+        try {
+            const users = await UserModel.getAll();
+            res.json(users);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
     /**
@@ -19,8 +25,34 @@ module.exports = {
     /**
      * userController.create()
      */
-    create: function (req, res) {
-        //TO DO
+    create: async function (req, res) {
+        const { username, email, password } = req.body;
+
+        if (!username || !email || !password) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        try {
+            // Check if user with this email already exists
+            const existingUser = await UserModel.getByEmail(email);
+            if (existingUser) {
+                return res.status(409).json({ message: 'Email already registered' });
+            }
+
+            // Hash the password TO DO!
+
+           // Save to DB
+            const newUser = await UserModel.create({
+                username,
+                email,
+                password_hash: password
+            });
+
+            return res.status(201).json(newUser);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error creating user', error: err });
+        }
     },
 
     /**
