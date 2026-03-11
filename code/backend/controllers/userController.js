@@ -68,8 +68,30 @@ module.exports = {
     /**
      * userController.remove()
      */
-    remove: function (req, res) {
-        //TO DO
+    remove: async function (req, res) {
+        const id = req.params.id;
+
+        try {
+            // Check if the user exists first
+            const user = await UserModel.getById(id);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            // Delete the user
+            await UserModel.delete(id);
+
+            // Return status
+            return res.status(200).json({ 
+                message: `User with ID ${id} successfully deleted.` 
+            });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ 
+                message: 'Error deleting user', 
+                error: err.message 
+            });
+        }
     },
 
     showRegister: function(req, res){
