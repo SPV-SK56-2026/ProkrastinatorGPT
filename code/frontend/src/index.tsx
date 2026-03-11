@@ -1,7 +1,7 @@
 //import { useState } from 'react'
 import './App.css'
 
-function App(){
+function Index(){
   return (
     <>
       <div>
@@ -13,7 +13,7 @@ function App(){
 
       <hr />
 
-      <div className="holder">
+      <div className="holder description">
         Naloga zahteva izdelavo <span className="orangeText">organizacijskega diagrama podjeta</span>, ki prikazuje strukturo in naloge posameznikov ali oddelkov. <span className="orangeText">Priložiti je treba log chata</span>, ki dokazuje, da so vsi člani ekipe sodelovali in oddali isto datoteko.
       </div>
 
@@ -38,7 +38,7 @@ function App(){
         <div className="bottomHolder">
           <div className="infoBlock">
             <div className="infoTitle">
-              <img src="icons/Barbell_64.png" className="icons" alt="icon" />
+              <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
               <span>Težavnost</span>
             </div>
             <div className="infoValue">4/10</div>
@@ -46,7 +46,7 @@ function App(){
 
           <div className="infoBlock">
             <div className="infoTitle">
-              <img src="icons/Duration_64.png" className="icons" alt="icon" />
+              <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
               <span>Predviden čas</span>
             </div>
             <div className="infoValue">2-3 ure</div>
@@ -66,4 +66,4 @@ function App(){
   )
 }
 
-export default App
+export default Index
