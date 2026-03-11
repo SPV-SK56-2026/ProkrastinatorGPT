@@ -2,8 +2,33 @@
 import './App.css'
 import Header from './header'
 
-function Index(){
+const observer = new ResizeObserver(() => {
+  window.parent.postMessage({ 
+    type: "RESIZE_IFRAME", 
+    height: document.body.scrollHeight 
+  }, "*");
+});
+observer.observe(document.body);
 
+function Index(){
+  const params = new URLSearchParams(window.location.search);
+    const noAssignment = params.get("noAssignment");
+
+    if (noAssignment) {
+      return (
+        <>
+          <Header />
+          <div className="titleContainer">
+            Odpri katero koli nalogo na Moodle, da vidiš podrobnosti.
+          </div>
+          <div className="btnWrapper">
+            <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
+              Zapri
+            </button>
+          </div>
+        </>
+      );
+  }
   return (
     <>
       <Header />
@@ -51,7 +76,9 @@ function Index(){
         <div className="btnWrapper">
           <button
             className="btnClose"
-            onClick={(): void => window.close()}
+            onClick={() => {
+              window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*");
+            }}
           >
             Zapri
           </button>

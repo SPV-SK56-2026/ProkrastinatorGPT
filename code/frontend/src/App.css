@@ -1,12 +1,12 @@
 #root {
   width: 350px;
-  min-height: 500px;
   padding: 1rem;
+  box-sizing: border-box;
 }
 
 @font-face {
   font-family: Aptos;
-  src: url("font/Aptos.ttf");
+  src: url("../font/Aptos.ttf");
 }
 body{
   background-color: #f5f5f5;
@@ -14,8 +14,8 @@ body{
   font-size: medium;
   font-weight: 500;
   font-family: Aptos, sans-serif;
+  overflow: hidden;
 }
-
 
 .logo {
   height: 6em;
@@ -200,7 +200,7 @@ li::marker {
   border-radius: 15px;
   cursor: pointer;
   border: none;
-
+  margin-bottom: 10px;
   box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.25);
 }
 .btnWrapper {
