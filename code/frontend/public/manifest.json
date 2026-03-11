@@ -8,11 +8,22 @@
   "version": "1.0",
   "description": "ProkratintorGPT",
   "action": {
-    "default_popup": "index.html",
-    "default_icon": {
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
-  "permissions": []
+  "default_icon": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+},
+"background": {
+  "service_worker": "background.js"
+},
+"permissions": ["tabs", "scripting"],
+  "content_scripts": [
+  {
+    "matches": ["*://ucilnice.arnes.si/*"],
+    "js": ["content.js"]
+  }],
+  "web_accessible_resources": [{
+  "resources": ["index.html","noAssignment.html", "assets/*", "icons/*", "*.js", "*.css"],
+  "matches": ["*://ucilnice.arnes.si/*"]
+}]
 }
