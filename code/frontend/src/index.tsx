@@ -4,6 +4,8 @@ import Header from './header'
 import Report from './report'
 import Register from './register'
 import Login from './login.tsx'
+import ForgotPassword from './forgotPassword.tsx'
+import ChangePassword from './changePassword.tsx'
 import { useApp } from './AppContext.tsx'
 
 const observer = new ResizeObserver(() => {
@@ -23,6 +25,8 @@ function Index() {
   if (page === "report") return <Report setPage={setPage} />;
   if (page === "register") return <Register setPage={setPage} />;
   if (page === "login") return <Login setPage={setPage} />;
+  if (page === "forgot") return <ForgotPassword setPage={setPage} />;
+  if(page==="change") return <ChangePassword setPage={setPage} />;
 
   if (noAssignment || !currentAssignment) {
     return (

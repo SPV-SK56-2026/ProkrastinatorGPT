@@ -53,7 +53,8 @@ function Login({ setPage }: Props) {
                         </a>
                         <a
                         href='#'
-                        className='linkToPassChange'>
+                        className='linkToPassChange'
+                         onClick={() => setPage?.("forgot")} >
                         Pozabljeno geslo?
                         </a>
                     </div>
