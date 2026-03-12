@@ -10,12 +10,62 @@ const openai = new OpenAI({
 });
 
 module.exports = {
+    /**
+     * Preprocess preveri bazo in odloči, ali potrebujemo AI analizo.
+     */
+    preprocess: async function (req, res) {
+        log(LogType.INFO, "Prejet zahtevek v preprocess.");
+
+        try {
+            const { id, content, timeRemaining, user_id } = req.body;
+
+            if (!id || !content) {
+                log(LogType.WARN, "Preprocess: Manjkajoči podatki (id ali content).");
+                return res.status(400).json({ success: false, message: "Manjka ID ali vsebina." });
+            }
+
+            // 1. Preveri, če naloga že obstaja v bazi
+            const existingAssignment = await assignmentRepository.findById(id);
+
+            if (existingAssignment) {
+                log(LogType.INFO, `Naloga ${id} že obstaja. Vračam iz baze.`);
+
+                // Če želiš, lahko tukaj dodaš še logiko, ki preveri če response za tega userja obstaja,
+                // ampak za osnovni preprocess vrnemo nalogo.
+                return res.json({
+                    success: true,
+                    source: "database",
+                    data: existingAssignment
+                });
+            }
+
+            // 2. Če naloge ni, pripravimo sporočilo za OpenAI
+            log(LogType.INFO, `Naloga ${id} ni v bazi. Pripravljam na klic 'create'.`);
+
+            // Konstruiramo message, ki ga tvoj create() pričakuje
+            const fullMessage = `ROK: ${timeRemaining || 'Ni podano'}\n\nVSEBINA NALOGE:\n${content}`;
+
+            // Nastavimo vrednosti v req.body, da create() deluje nemoteno
+            req.body.message = fullMessage;
+            req.body.user_id = user_id;
+            // Dodamo moodle_id v req, da ga create() lahko uporabi pri shranjevanju (če ga tvoj repo sprejme)
+            req.body.moodle_id = id;
+
+            // 3. Pokličemo obstoječo create funkcijo
+            return module.exports.create(req, res);
+
+        } catch (err) {
+            log(LogType.ERROR, `Napaka v preprocess: ${err.message}`);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+    },
+
     create: async function (req, res) {
         const startTime = Date.now();
         log(LogType.INFO, "Začetek celovite obdelave (Assignment + Response).");
 
         try {
-            const { message, user_id } = req.body;
+            const { message, user_id, moodle_id } = req.body; // moodle_id pride iz preprocess
 
             if (!message) {
                 return res.status(400).json({ success: false, message: 'Manjka besedilo naloge' });
@@ -23,7 +73,6 @@ module.exports = {
 
             log(LogType.INFO, "Pošiljam na OpenAI za popolno analizo...");
 
-            // AI-ju naročimo, naj nam vrne vse za OBE tabeli hkrati
             const Instructions = `
             You are ProkrastinatorGPT, a smart homework analyzer built into a browser extension for students. You read Moodle assignments and help students understand what they need to do and how to plan their work.
 
@@ -65,11 +114,8 @@ RULES:
                 response_format: { type: "json_object" }
             });
 
-
             const aiData = JSON.parse(completion.choices[0].message.content);
             log(LogType.SUCCESS, "AI uspešno analiziral nalogo.");
-
-
 
             const stepsAsPlainText = aiData.koraki
                 .map((k, index) => `${index + 1}. ${k.besedilo}`)
@@ -77,6 +123,7 @@ RULES:
 
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
             const newAssignment = await assignmentRepository.create({
+                id: moodle_id, // Uporabimo originalni ID, če ga repo sprejme
                 title: aiData.naslov || "Nova naloga",
                 explanation: aiData.opis,
                 difficulty: aiData.tezavnost,
@@ -90,15 +137,12 @@ RULES:
                     user_id: user_id,
                     assignment_id: newAssignment.id,
                     summary_text: aiData.opis,
-
                     steps_text: stepsAsPlainText,
                     difficulty_assessment: aiData.tezavnost,
                     estimated_minutes: (aiData.cas_max || 1) * 60
                 });
                 log(LogType.SUCCESS, "Response shranjen kot čisti tekst.");
             }
-
-// ... preostanek kode ...
 
             return res.status(201).json({
                 success: true,
