@@ -361,3 +361,27 @@ li::marker {
   width: 28px;
   height:28px;
 }
+.linkToRegister{
+  text-decoration: none;
+  text-align: left;
+  font-size: 11px;
+  color: #3A2F72;
+}
+.linkToRegister:focus{
+  color: #3A2F72;
+}
+.linkToPassChange{
+  text-decoration: none;
+  text-align: right;
+  font-size: 11px;
+  color: #3A2F72;
+}
+.linkToPassChange:focus{
+  color: #3A2F72;
+}
+.linksContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
