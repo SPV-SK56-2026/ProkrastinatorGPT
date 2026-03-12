@@ -6,6 +6,7 @@ import Register from './register'
 import Login from './login.tsx'
 import ForgotPassword from './forgotPassword.tsx'
 import ChangePassword from './changePassword.tsx'
+import Profile from './profile.tsx'
 import { useApp } from './AppContext.tsx'
 
 const observer = new ResizeObserver(() => {
@@ -27,6 +28,7 @@ function Index() {
   if (page === "login") return <Login setPage={setPage} />;
   if (page === "forgot") return <ForgotPassword setPage={setPage} />;
   if(page==="change") return <ChangePassword setPage={setPage} />;
+  if(page === "profile") return  <Profile setPage={setPage} />;
 
   if (noAssignment || !currentAssignment) {
     return (
