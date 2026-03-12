@@ -28,4 +28,4 @@ jobs:
           context: ./code/backend
           file: ./code/backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/PGPT-backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pgpt-backend:latest
