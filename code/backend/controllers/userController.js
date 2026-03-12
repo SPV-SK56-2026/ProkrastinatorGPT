@@ -2,6 +2,7 @@
 
 const UserModel = require('../db/repositories/UserRepository');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { log, LogType } = require('../utils/logger');
 
 module.exports = {
@@ -74,6 +75,7 @@ module.exports = {
      */
     update: async function (req, res) {
         const id = req.params.id;
+        const idFromToken = req.userData.id;
         const { username, email, password } = req.body;
         log(LogType.INFO, `Poskus posodobitve uporabnika z ID: ${id}`);
 
@@ -85,6 +87,14 @@ module.exports = {
                 return res.status(404).json({ message: 'User not found' });
             }
 
+            // Check if active user is updating his profile
+            if (id !== idFromToken.toString()) {
+                return res.status(403).json({ 
+                    message: "No permission to update this profile." 
+                });
+            }
+
+            // Prepare the update object
             const updateData = {};
             if (username) updateData.username = username;
             if (email) updateData.email = email;
@@ -153,10 +163,28 @@ module.exports = {
         //TO DO
     },
 
-    login: function(req, res, next){
-        log(LogType.INFO, `Poskus prijave uporabnika.`);
-        //TO DO
-    },
+    login: async function (req, res) {/*
+    const { email, password } = req.body;
+    try {
+        const user = await UserModel.getByEmail(email);
+        if (!user) return res.status(401).json({ message: 'Napačni podatki' });
+
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
+        */
+        // Generate the token
+        const token = jwt.sign(
+            { id: user.id, email: user.email }, // Data inside the token
+            process.env.JWT_SECRET,             // Your secret key
+            { expiresIn: '2h' }                 // Expiration time
+        );
+
+        res.json({ token, user: { id: user.id, username: user.username } });
+        /*
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    } */
+},
 
     profile: function(req, res,next){
         log(LogType.INFO, "Dostop do profila uporabnika.");
