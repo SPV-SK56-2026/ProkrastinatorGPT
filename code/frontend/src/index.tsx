@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import './App.css'
-import Header from './header'
 import Report from './report'
 import Register from './register'
 import Login from './login.tsx'
 import ForgotPassword from './forgotPassword.tsx'
 import ChangePassword from './changePassword.tsx'
 import Profile from './profile.tsx'
+import LayoutWrapper from './components/LayoutWrapper.tsx'
 import { useApp } from './AppContext.tsx'
 
 const observer = new ResizeObserver(() => {
@@ -27,38 +27,22 @@ function Index() {
   if (page === "register") return <Register setPage={setPage} />;
   if (page === "login") return <Login setPage={setPage} />;
   if (page === "forgot") return <ForgotPassword setPage={setPage} />;
-  if(page==="change") return <ChangePassword setPage={setPage} />;
-  if(page === "profile") return  <Profile setPage={setPage} />;
-
-  if (noAssignment || !currentAssignment) {
-    return (
-      <>
-        <Header setPage={setPage} />
-        <div className="titleContainer">
-          Odpri katero koli nalogo na Moodle, da vidiš podrobnosti.
-        </div>
-        <div className="btnWrapper">
-          <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
-            Zapri
-          </button>
-        </div>
-      </>
-    );
-  }
+  if (page === "change") return <ChangePassword setPage={setPage} />;
+  if (page === "profile") return <Profile setPage={setPage} />;
 
   return (
-    <>
-      <Header setPage={setPage} />
+    <LayoutWrapper isNoAssignment={!!noAssignment || !currentAssignment} setPage={setPage}>
       <div 
         className="holder description" 
-        dangerouslySetInnerHTML={{ __html: currentAssignment.description }}
+        dangerouslySetInnerHTML={{ __html: currentAssignment?.description || '' }}
       />
+
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
             <ul>
-              {currentAssignment.steps.map((step) => (
+              {currentAssignment?.steps.map((step) => (
                 <li key={step.id}>
                   <span className="blueText">{step.description}</span>
                 </li>
@@ -67,31 +51,28 @@ function Index() {
           </div>
         </div>
       </div>
+
       <hr />
-      <div>
-        <div className="bottomHolder">
-          <div className="infoBlock">
-            <div className="infoTitle">
-              <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
-              <span>Težavnost</span>
-            </div>
-            <div className="infoValue">{currentAssignment.difficulty}</div>
+
+      <div className="bottomHolder">
+        <div className="infoBlock">
+          <div className="infoTitle">
+            <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
+            <span>Težavnost</span>
           </div>
-          <div className="infoBlock">
-            <div className="infoTitle">
-              <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
-              <span>Predviden čas</span>
-            </div>
-            <div className="infoValue">{currentAssignment.estimatedTime}</div>
-          </div>
+          <div className="infoValue">{currentAssignment?.difficulty}</div>
         </div>
-        <div className="btnWrapper">
-          <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
-            Zapri
-          </button>
+
+        <div className="infoBlock">
+          <div className="infoTitle">
+            <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
+            <span>Predviden čas</span>
+          </div>
+          <div className="infoValue">{currentAssignment?.estimatedTime}</div>
         </div>
       </div>
-    </>
+    </LayoutWrapper>
   )
 }
+
 export default Index
