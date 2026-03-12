@@ -3,7 +3,7 @@ name: Build and Push Backend Image
 on:
   push:
     branches:
-      - release
+      - backend/main
 
 jobs:
   build-and-push:
@@ -25,7 +25,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./code/backend
+          file: ./code/backend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/activequest-backend:latest
