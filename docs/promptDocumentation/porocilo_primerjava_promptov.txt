@@ -1,0 +1,204 @@
+POROČILO: PRIMERJAVA PROMPT VERZIJ v1–v5
+Browser Extension — AI Prompt Engineering Ekipa
+==================================================
+Datum: 10. 3. 2026
+Pripravil: Val
+Skupaj testiranih nalog: 13 (na vsaki verziji)
+
+
+==================================================
+PREGLED PROMPT VERZIJ
+==================================================
+
+v1 — Osnovna šolska definicija
+  Pristop: Kratka sistemska vloga + JSON format + minimalna navodila.
+  Dolžina prompta: ~350 znakov.
+  Posebnost: Brez primera, brez razlage kriterijev za težavnost.
+
+v2 — Izkušeni tutor
+  Pristop: "Izkušen univerzitetni tutor" + poudarek na realnem cilju naloge.
+  Dolžina prompta: ~480 znakov.
+  Posebnost: Dodano navodilo za vključitev raziskave, dela IN revizije v čas.
+
+v3 — Few-shot primer
+  Pristop: Primer vhoda in izhoda (spletna stran z HTML/CSS) + minimalna pravila.
+  Dolžina prompta: ~900 znakov.
+  Posebnost: Edina verzija z konkretnim few-shot primerom.
+
+v4 — Chain-of-thought pred JSON-om
+  Pristop: Pred JSON-om AI napiše 3–5 stavkov analize (tip naloge, deliverable,
+           skrite zahteve, težave, čas po fazah). Potem JSON.
+  Dolžina prompta: ~620 znakov.
+  Posebnost: Edina verzija z eksplicitnim CoT korakom pred izhodom.
+
+v5 — Persona + primer + pravila
+  Pristop: Ime ("ProkrastinatorGPT") + primer izhoda + eksplicitna pravila.
+  Dolžina prompta: ~820 znakov.
+  Posebnost: Kombinacija persone, few-shot primera in pravil. Trenutno aktivna verzija.
+
+
+==================================================
+STATISTIKA TOKENOV IN STROŠKOV
+==================================================
+
+Verzija  Input tokeni  Output tokeni  Skupaj tokeni  Skupna cena ($)  Cena/naloga (¢)
+v1       7.119         28.727         35.846         $0.01830         0.141¢
+v2       7.275         31.325         38.600         $0.01989         0.153¢
+v3       9.173         41.697         50.870         $0.02639         0.203¢
+v4       6.729         28.462         35.191         $0.01809         0.139¢
+v5       10.577        26.393         36.970         $0.01742         0.134¢
+
+Najcenejša verzija:   v5  ($0.01742) — kljub najdaljšemu promptu, ker generira
+                                        krajše outpute (manj "zapolnjevanja").
+Najdražja verzija:    v3  ($0.02639) — few-shot primer povzroči daljše outpute.
+Najkrajši outputi:    v5  (26.393 output tokenov) — persona + primer skrajša generacijo.
+Najdaljši outputi:    v3  (41.697 output tokenov) — few-shot sproži daljše izhode.
+
+Razlika v ceni (v3 vs v5): +51.5% — v3 je za polovico dražja od v5 brez jasnih prednosti.
+
+
+==================================================
+PRIMERJAVA KAKOVOSTI IZHODOV PO KATEGORIJAH
+==================================================
+
+----------------------------------------------------
+1. KONSISTENTNOST JSON FORMATA (ali je JSON vedno veljaven)
+----------------------------------------------------
+v1: OK   — JSON vedno veljaven, a včasih manjka "poudarek" ujemanje.
+v2: OK   — JSON veljaven, "poudarek" ujemanje boljše kot v1.
+v3: OK   — JSON veljaven. Few-shot primer pomaga pri strukturi.
+v4: OPOMBA — CoT besedilo pred JSON-om je treba izrezati pri parsiranju.
+              Tveganje: pri nekaterih nalogah AI doda besedilo po JSON-u.
+v5: OK   — JSON konsistenten. Najčistejši izhod pri vseh 13 nalogah.
+
+Zmagovalec konsistentnosti: v5 (skupaj z v3)
+
+
+----------------------------------------------------
+2. KAKOVOST OPISA (opis — ali zajame pravo bistvo naloge)
+----------------------------------------------------
+v1: Opis je pogosto preskratek ali preveč generičen. Pogreša skrite zahteve.
+v2: Boljši opis — "realni cilj" navodilo pomaga. Včasih predolg.
+v3: Opis dober, a včasih samo prepis navodil namesto sinteze.
+v4: Najboljši opisi — CoT analiza prisili AI da dejansko razmisli pred pisanjem.
+    Skrite zahteve (npr. SSH konfiguracija pri TP-003) so bolje zajete v analizi,
+    a ne vedno prenesene v JSON opis.
+v5: Dober opis, kratek in jedrnat. Manj globok kot v4, a konsistenten.
+
+Zmagovalec kakovosti opisa: v4 (globina), v5 (konsistentnost)
+
+
+----------------------------------------------------
+3. NATANČNOST OCENE TEŽAVNOSTI
+----------------------------------------------------
+Primerjava povprečnih ocen po verzijah za iste naloge:
+
+Naloga               Pričakovano  v1   v2   v3   v4   v5
+N01-MPI_1            medium(5)    4    6    6    5    5
+N02-MPI_2            medium(5)    4    6    7    5    6
+N03-MPI_3            high(7)      4    6    7    5    5
+Vaja 1 (Kompresija)  low(2)       4    6    3    5    3
+DCT kompresija       high(7)      6    6    7    5    6
+Kompresija zvoka     high(8)      4    6    7    5    6
+Naloga 05 (Razpis)   low(3)       4    6    5    5    4
+Naloga 04 (CV)       low(2)       4    6    3    5    3
+Lovci na zaklade     medium(5)    4    6    6    5    6
+Pomorska flota       medium(5)    4    6    6    5    5
+Štorkljino gnezdo    high(7)      4    6    7    5    6
+Pirati               high(8)      4    6    8    5    7
+
+Opažanja:
+- v1: Vse naloge 4/10 — nima kriterijev, vrne "varno" vrednost. NEUPORABNO.
+- v2: Vse naloge 6/10 — enako problematično kot v1, samo na drugi vrednosti.
+- v3: Najboljša diferenciacija — low: 3, medium: 6, high: 7–8. NAJBOLJŠE.
+- v4: Vse naloge 5/10 — CoT pomaga pri opisu, ne pa pri oceni.
+- v5: Dobra diferenciacija za extremne primere, slaba pri mejnih.
+
+Zmagovalec natančnosti težavnosti: v3 (few-shot primer kaže range)
+
+
+----------------------------------------------------
+4. NATANČNOST OCENE ČASA
+----------------------------------------------------
+Naloga               Pričakovano  v1      v2      v3       v4      v5
+N01-MPI_1            3–5h         2–3h    2–4h    4–8h     2–4h    3–6h
+N02-MPI_2            4–6h         2–3h    2–4h    4–8h     2–4h    4–8h
+N03-MPI_3            5–8h         2–3h    2–4h    3–5h     2–4h    2–4h
+DCT kompresija       8–12h        8–16h   2–4h    8–20h    2–4h    8–14h
+Kompresija zvoka     10–15h       2–3h    2–4h    15–30h   2–4h    8–20h
+Pirati               8–14h        2–3h    2–4h    6–15h    2–4h    6–12h
+Naloga 05 (Razpis)   2–3h         2–3h    4–8h    4–8h     2–4h    4–7h
+Naloga 04 (CV)       1–2h         2–3h    2–4h    1–3h     2–4h    2–4h
+
+Opažanja:
+- v1: Skoraj vse naloge 2–3h — ignorira kompleksnost. NEUPORABNO.
+- v2: Večina 2–4h za tehnične, 4–8h za organizacijske — inverzno! NAPAKA.
+- v3: Najboljša diferenciacija za visoke čase (Kompresija zvoka: 15–30h).
+      Premalo za TP-003 (3–5h namesto 5–8h).
+- v4: Podobno kot v1, večina 2–4h. CoT ne pomaga pri oceni časa.
+- v5: Dobra za tehnične naloge, slaba za organizacijske (previsoka).
+
+Zmagovalec natančnosti časa: v3 (z opombo o preširih razponih)
+
+
+----------------------------------------------------
+5. UJEMANJE POUDARKOV (substring ujemanje)
+----------------------------------------------------
+Kritična zahteva: "poudarek" mora biti TOČEN podniz besedila v "besedilo".
+
+v1: Ujemanje ~85% — občasne napake pri daljših poudarkih.
+v2: Ujemanje ~90% — boljše, a nekatere točke končajo s piko (ujemanje propade).
+v3: Ujemanje ~95% — few-shot primer pomaga modelu razumeti zahtevo.
+v4: Ujemanje ~80% — CoT besedilo zmede model glede formata.
+v5: Ujemanje ~97% — najboljše. Eksplicitno "copy-pasted character for character" deluje.
+
+Zmagovalec ujemanja: v5
+
+
+==================================================
+SKUPNA PRIMERJALNA TABELA
+==================================================
+
+Kriterij                    v1    v2    v3    v4    v5
+JSON konsistentnost         OK    OK    OK    DEL   OK
+Kakovost opisa              DEL   OK    OK    ODLIČ OK
+Natančnost težavnosti       NOK   NOK   ODLIČ DEL   OK
+Natančnost časa             NOK   NOK   OK    NOK   DEL
+Ujemanje poudarkov          DEL   DEL   OK    DEL   ODLIČ
+Cena (nižje = boljše)       DEL   DEL   NOK   OK    ODLIČ
+Output konsistentnost       DEL   DEL   DEL   DEL   OK
+
+Skupna ocena                2/7   3/7   4/7   2/7   6/7
+
+Rang: v5 > v3 > v2 > v1 = v4
+
+
+==================================================
+ZAKLJUČKI IN PRIPOROČILA
+==================================================
+
+1. NAJBOLJŠA TRENUTNA VERZIJA: v5
+   v5 je najboljša za produkcijo: najnižji strošek, najboljše ujemanje poudarkov,
+   konsistenten JSON. Slabost: diferenciacija težavnosti in časa še ni optimalna.
+
+2. VREDNA IDEJA IZ v3: FEW-SHOT ZA TEŽAVNOST IN ČAS
+   v3 dosega najboljšo diferenciацijo težavnosti in časa. Razlog: few-shot primer
+   prikazuje konkreten izhod z vrednostmi. Priporoča se, da se v v5 doda drugi
+   primer — tehnično zahtevna naloga (high/8h+) — da model vidi celoten range.
+
+3. VREDNA IDEJA IZ v4: COT ANALIZA
+   CoT korak v v4 izboljša kakovost opisa. Možna nadgradnja za v6:
+   CoT analiza v obliki "skritih" navodil v system promptu (ne v izhodu).
+
+4. PREDLAGANA v6 = v5 + FEW-SHOT PRIMER ZA HIGH + EKSPLICITNI KRITERIJI
+   Konkretni predlogi za naslednji prompt:
+   a) Dodati drugi primer (high težavnost, 8–12h) poleg obstoječega (medium, 2–3h)
+   b) Dodati eksplicitne kriterije: "tezavnost 1–3: naloge brez kode ali z enim
+      algoritmom. 4–6: tehnične naloge s standardnimi algoritmi. 7–10: infrastruktura,
+      napredni algoritmi ali večkomponentne implementacije."
+   c) Omejiti razpon časa: "cas_max - cas_min <= 6"
+   d) Ohraniti persono, pravila ujemanja in čisti JSON format iz v5.
+
+5. ZAVRNITI v1 IN v4 ZA PRODUKCIJO
+   v1 in v4 sta neuporabna za produkcijo — v1 vrača enake vrednosti za vse naloge,
+   v4 pa zahteva CoT parsiranje in ima najslabše ujemanje poudarkov.
