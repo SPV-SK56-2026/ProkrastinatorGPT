@@ -1,36 +1,29 @@
-import { useState } from 'react' 
+import { useState } from 'react'
 import './App.css'
-import Header from './header'
-
-const observer = new ResizeObserver(() => {
-  window.parent.postMessage({ 
-    type: "RESIZE_IFRAME", 
-    height: document.body.scrollHeight 
-  }, "*");
-});
-observer.observe(document.body);
+import LayoutWrapper from './components/LayoutWrapper'
+import PageHeader from './components/PageHeader'
+import FormInput from './components/FormInput'
+import PrimaryButton from './components/PrimaryButton'
 
 interface Props {
   setPage?: (page: string) => void;
 }
 
 function Login({ setPage }: Props) {
-  // Stanja za shranjevanje vnosov
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const params = new URLSearchParams(window.location.search);
+  const noAssignment = params.get("noAssignment");
 
-  // posiljanje na back-end
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prepreči osveževanje strani ob kliku na gumb
+    e.preventDefault();
     setLoading(true);
 
     try {
       const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
@@ -38,7 +31,7 @@ function Login({ setPage }: Props) {
         const data = await response.json();
         console.log('Prijava uspešna:', data);
         alert('Uspešno si se prijavil!');
-        setPage?.("home"); // Preusmeritev na domov
+        setPage?.("home");
       } else {
         alert('Napaka pri prijavi. Preveri podatke.');
       }
@@ -51,61 +44,43 @@ function Login({ setPage }: Props) {
   };
 
   return (
-    <>
-        <Header setPage={setPage} />
-        <div id="titleContainer">
-            <span id="title">Prijava</span>
-            <img src="icons/login.png" id="registerIcon" alt="register" />
-        </div>
-        <div className='formContainer'>
-            {/*  Povezava obrazca s funkcijo handleLogin */}
-            <form onSubmit={handleLogin}>
-                <div className="registerContainer">
-                    <label className="registerLabel">Email</label>
-                    <input
-                      className='registerInput'
-                      type='email'
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)} // Posodobi stanje ob pisanju
-                      required
-                    />
-                </div>
-
-                <div className="registerContainer">
-                    <label className="registerLabel">Geslo</label>
-                    <input
-                      className='registerInput'
-                      type='password'
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                </div>
-                
-                <div className="registerContainer">
-                    <button type="submit" className="btnSubmit" disabled={loading}>
-                      {loading ? 'Prijavljanje...' : 'Prijava'}
-                    </button>
-                    <div className="linksContainer">
-                        <a href='#' className='linkToRegister' onClick={() => setPage?.("register")}>
-                          Še nimaš računa? Registriraj se
-                        </a>
-                        <a href='#' className='linkToPassChange' onClick={() => setPage?.("forgot")}>
-                          Pozabljeno geslo?
-                        </a>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div className="btnWrapper">
-            <button
-                className="btnClose"
-                onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}
-            >
-                Zapri
-            </button>
-        </div>
-    </>
+    <LayoutWrapper isNoAssignment={!!noAssignment} setPage={setPage}>
+      <PageHeader 
+        title="Prijava" 
+        iconSrc="icons/login.png" 
+        iconId="registerIcon" 
+      />
+      <div className='formContainer'>
+        <form onSubmit={handleLogin}>
+          <FormInput 
+            label="Email" 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <FormInput 
+            label="Geslo" 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="registerContainer">
+            <PrimaryButton disabled={loading}>
+              {loading ? 'Prijavljanje...' : 'Prijava'}
+            </PrimaryButton>
+            <div className="linksContainer">
+              <a href='#' className='linkToRegister' onClick={() => setPage?.("register")}>
+                Še nimaš računa? Registriraj se
+              </a>
+              <a href='#' className='linkToPassChange' onClick={() => setPage?.("forgot")}>
+                Pozabljeno geslo?
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </LayoutWrapper>
   )
 }
+
 export default Login
