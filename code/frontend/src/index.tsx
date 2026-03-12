@@ -1,6 +1,7 @@
 //import { useState } from 'react'
 import './App.css'
 import Header from './header'
+import { useApp } from './AppContext.tsx'
 
 const observer = new ResizeObserver(() => {
   window.parent.postMessage({ 
@@ -11,10 +12,11 @@ const observer = new ResizeObserver(() => {
 observer.observe(document.body);
 
 function Index(){
+  const { currentAssignment } = useApp();
   const params = new URLSearchParams(window.location.search);
     const noAssignment = params.get("noAssignment");
 
-    if (noAssignment) {
+    if (noAssignment || !currentAssignment) {
       return (
         <>
           <Header />
@@ -33,20 +35,21 @@ function Index(){
     <>
       <Header />
 
-      <div className="holder description">
-        Naloga zahteva izdelavo <span className="orangeText">organizacijskega diagrama podjeta</span>, ki prikazuje strukturo in naloge posameznikov ali oddelkov. <span className="orangeText">Priložiti je treba log chata</span>, ki dokazuje, da so vsi člani ekipe sodelovali in oddali isto datoteko.
-      </div>
+      <div 
+        className="holder description" 
+        dangerouslySetInnerHTML={{ __html: currentAssignment.description }}
+      />
 
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
             <ul>
-              <li><span className="blueText">Zbrati informacije</span> o strukturi podjeta in nalogah posameznikov/oddelkov.</li>
-              <li><span className="blueText">Izdelati organizacijskih diagram</span>, ki prikazuje hierarhijo in odgovornosti.</li>
-              <li><span className="blueText">Sodelovati v ekipi</span> in se dogovoriti o vsebini ter oblikovanju diagrama.</li>
-              <li><span className="blueText">Zabeležiti log chata</span> kot dokaz aktivnega sodelovanja vseh članov.</li>
-              <li><span className="blueText">Oddati diagram in log chata v skupni datoteki.</span></li>
+              {currentAssignment.steps.map((step) => (
+                <li key={step.id}>
+                  <span className="blueText">{step.description}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -61,7 +64,7 @@ function Index(){
               <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
               <span>Težavnost</span>
             </div>
-            <div className="infoValue">4/10</div>
+            <div className="infoValue">{currentAssignment.difficulty}</div>
           </div>
 
           <div className="infoBlock">
@@ -69,7 +72,7 @@ function Index(){
               <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
               <span>Predviden čas</span>
             </div>
-            <div className="infoValue">2-3 ure</div>
+            <div className="infoValue">{currentAssignment.estimatedTime}</div>
           </div>
         </div>
 
