@@ -12,8 +12,36 @@ interface Props {
 function Login({ setPage }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Prijava uspešna:', data);
+        alert('Uspešno si se prijavil!');
+        setPage?.("home");
+      } else {
+        alert('Napaka pri prijavi. Preveri podatke.');
+      }
+    } catch (error) {
+      console.error('Napaka na omrežju:', error);
+      alert('Strežnik ni dosegljiv.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <LayoutWrapper isNoAssignment={!!noAssignment} setPage={setPage}>
@@ -23,21 +51,23 @@ function Login({ setPage }: Props) {
         iconId="registerIcon" 
       />
       <div className='formContainer'>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={handleLogin}>
           <FormInput 
             label="Email" 
             type="email" 
             value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
+            onChange={(e) => setEmail(e.target.value)}
           />
           <FormInput 
             label="Geslo" 
             type="password" 
             value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
+            onChange={(e) => setPassword(e.target.value)}
           />
           <div className="registerContainer">
-            <PrimaryButton>Prijava</PrimaryButton>
+            <PrimaryButton disabled={loading}>
+              {loading ? 'Prijavljanje...' : 'Prijava'}
+            </PrimaryButton>
             <div className="linksContainer">
               <a href='#' className='linkToRegister' onClick={() => setPage?.("register")}>
                 Še nimaš računa? Registriraj se
