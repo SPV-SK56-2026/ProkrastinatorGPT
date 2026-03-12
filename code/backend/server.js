@@ -22,6 +22,7 @@ const userRouter = require('./routes/userRoutes');
 const promptRouter = require('./routes/promptRoutes');
 const bugRouter = require('./routes/bugRoutes');
 
+
 const app = express();
 
 app.use(cors());
@@ -42,6 +43,7 @@ app.use('/', router);
 app.use('/users', userRouter);
 app.use('/prompt', promptRouter);
 app.use('/bug', bugRouter);
+
 
 const PORT = process.env.PORT || 5000;
 
