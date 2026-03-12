@@ -10,17 +10,18 @@ const observer = new ResizeObserver(() => {
 });
 observer.observe(document.body);
 
+
 interface Props {
   setPage?: (page: string) => void;
 }
 
-function Register({ setPage }: Props) {
+function ForgotPassword({ setPage }: Props) {
   return (
     <>
-      <Header setPage={setPage} />
+        <Header setPage={setPage} />
         <div id="titleContainer">
-            <span id="title">Registracija</span>
-            <img src="icons/register.png" id="registerIcon" alt="register" />
+            <span id="title">Pozabljeno geslo</span>
+            <img src="icons/login.png" id="registerIcon" alt="register" />
         </div>
         <div className='formContainer'>
             <form>
@@ -31,35 +32,21 @@ function Register({ setPage }: Props) {
                     type='email'
                     />
                 </div>
-
                 <div className="registerContainer">
-                    <label className="registerLabel">Geslo</label>
-                    <input
-                    className='registerInput'
-                    type='password'
-                    />
-                </div>
-                
-                <div className="registerContainer">
-                    <button className="btnSubmit">Registracija</button>
-                    <a
-                    href='#' onClick={() => setPage?.("login")} 
-                    className='linkToLogin'>
-                    Že imaš račun? Prijavi se
-                    </a>
+                    <button className="btnSubmit">Pošlji</button>
                 </div>
             </form>
         </div>
         <div className="btnWrapper">
             <button
                 className="btnClose"
-                onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}
+               onClick={() => setPage?.("login")} 
             >
-                Zapri
+                Nazaj
             </button>
             </div>
 
     </>
   )
 }
-export default Register
+export default ForgotPassword

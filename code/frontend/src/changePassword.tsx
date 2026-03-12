@@ -14,24 +14,16 @@ interface Props {
   setPage?: (page: string) => void;
 }
 
-function Register({ setPage }: Props) {
+function ChangePassword({ setPage }: Props) {
   return (
     <>
       <Header setPage={setPage} />
         <div id="titleContainer">
-            <span id="title">Registracija</span>
+            <span id="title">Sprememba gesla</span>
             <img src="icons/register.png" id="registerIcon" alt="register" />
         </div>
         <div className='formContainer'>
             <form>
-                <div className="registerContainer">
-                    <label className="registerLabel">Email</label>
-                    <input
-                    className='registerInput'
-                    type='email'
-                    />
-                </div>
-
                 <div className="registerContainer">
                     <label className="registerLabel">Geslo</label>
                     <input
@@ -41,12 +33,7 @@ function Register({ setPage }: Props) {
                 </div>
                 
                 <div className="registerContainer">
-                    <button className="btnSubmit">Registracija</button>
-                    <a
-                    href='#' onClick={() => setPage?.("login")} 
-                    className='linkToLogin'>
-                    Že imaš račun? Prijavi se
-                    </a>
+                    <button className="btnSubmit">Spremeni</button>
                 </div>
             </form>
         </div>
@@ -62,4 +49,4 @@ function Register({ setPage }: Props) {
     </>
   )
 }
-export default Register
+export default ChangePassword

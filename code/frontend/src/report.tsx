@@ -2,12 +2,15 @@
 import './App.css'
 import Header from './header'
 
-function Report(){
+interface Props {
+  setPage?: (page: string) => void;
+}
+
+function Report({ setPage }: Props) {
   return (
     <div>
 
-      <Header />
-   
+     <Header setPage={setPage} />
       <div id="titleContainer">
         <span id="title">Prijavi napako</span>
         <img src="icons/bug.png" id="bugIcon" alt="bug" />
@@ -30,12 +33,9 @@ function Report(){
 
 
       <div className="btnWrapper">
-          <button
-            className="btnClose"
-            onClick={(): void => window.close()}
-          >
-            Zapri
-          </button>
+         <button className="btnClose" onClick={() => setPage?.("home")}>
+          Nazaj
+        </button>
         </div>
 
     </div>

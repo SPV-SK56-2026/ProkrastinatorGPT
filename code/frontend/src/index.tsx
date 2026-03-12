@@ -1,6 +1,12 @@
-//import { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import Header from './header'
+import Report from './report'
+import Register from './register'
+import Login from './login.tsx'
+import ForgotPassword from './forgotPassword.tsx'
+import ChangePassword from './changePassword.tsx'
+import Profile from './profile.tsx'
 import { useApp } from './AppContext.tsx'
 
 const observer = new ResizeObserver(() => {
@@ -11,35 +17,42 @@ const observer = new ResizeObserver(() => {
 });
 observer.observe(document.body);
 
-function Index(){
+function Index() {
   const { currentAssignment } = useApp();
+  const [page, setPage] = useState("home");
   const params = new URLSearchParams(window.location.search);
-    const noAssignment = params.get("noAssignment");
+  const noAssignment = params.get("noAssignment");
 
-    if (noAssignment || !currentAssignment) {
-      return (
-        <>
-          <Header />
-          <div className="titleContainer">
-            Odpri katero koli nalogo na Moodle, da vidiš podrobnosti.
-          </div>
-          <div className="btnWrapper">
-            <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
-              Zapri
-            </button>
-          </div>
-        </>
-      );
+  if (page === "report") return <Report setPage={setPage} />;
+  if (page === "register") return <Register setPage={setPage} />;
+  if (page === "login") return <Login setPage={setPage} />;
+  if (page === "forgot") return <ForgotPassword setPage={setPage} />;
+  if(page==="change") return <ChangePassword setPage={setPage} />;
+  if(page === "profile") return  <Profile setPage={setPage} />;
+
+  if (noAssignment || !currentAssignment) {
+    return (
+      <>
+        <Header setPage={setPage} />
+        <div className="titleContainer">
+          Odpri katero koli nalogo na Moodle, da vidiš podrobnosti.
+        </div>
+        <div className="btnWrapper">
+          <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
+            Zapri
+          </button>
+        </div>
+      </>
+    );
   }
+
   return (
     <>
-      <Header />
-
+      <Header setPage={setPage} />
       <div 
         className="holder description" 
         dangerouslySetInnerHTML={{ __html: currentAssignment.description }}
       />
-
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
@@ -54,9 +67,7 @@ function Index(){
           </div>
         </div>
       </div>
-
       <hr />
-
       <div>
         <div className="bottomHolder">
           <div className="infoBlock">
@@ -66,7 +77,6 @@ function Index(){
             </div>
             <div className="infoValue">{currentAssignment.difficulty}</div>
           </div>
-
           <div className="infoBlock">
             <div className="infoTitle">
               <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
@@ -75,14 +85,8 @@ function Index(){
             <div className="infoValue">{currentAssignment.estimatedTime}</div>
           </div>
         </div>
-
         <div className="btnWrapper">
-          <button
-            className="btnClose"
-            onClick={() => {
-              window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*");
-            }}
-          >
+          <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
             Zapri
           </button>
         </div>
@@ -90,5 +94,4 @@ function Index(){
     </>
   )
 }
-
 export default Index
