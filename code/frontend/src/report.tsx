@@ -1,38 +1,44 @@
-import { useState } from 'react'
+//import { useState } from 'react'
 import './App.css'
-import LayoutWrapper from './components/LayoutWrapper'
-import PageHeader from './components/PageHeader'
-import PrimaryButton from './components/PrimaryButton'
+import Header from './header'
 
 interface Props {
   setPage?: (page: string) => void;
 }
 
-function Report(){
-  const [report, setReport] = useState('')
-
+function Report({ setPage }: Props) {
   return (
-    <LayoutWrapper>
-      <PageHeader 
-        title="Prijavi napako" 
-        iconSrc="icons/bug.png" 
-        iconId="bugIcon" 
-      />
+    <div>
+
+     <Header setPage={setPage} />
+      <div id="titleContainer">
+        <span id="title">Prijavi napako</span>
+        <img src="icons/bug.png" id="bugIcon" alt="bug" />
+      </div>
+
 
       <div className="inputContainer">
         <label className="label">Opis napake</label>
+
         <textarea
           className="textInput"
           placeholder=""
-          value={report}
-          onChange={(e) => setReport(e.target.value)}
         />
       </div>
 
-      <PrimaryButton onClick={() => console.log('Report submitted:', report)}>
+      <button className="btnSubmit">
         Prijava
-      </PrimaryButton>
-    </LayoutWrapper>
+      </button>
+
+
+
+      <div className="btnWrapper">
+         <button className="btnClose" onClick={() => setPage?.("home")}>
+          Nazaj
+        </button>
+        </div>
+
+    </div>
   )
 }
 

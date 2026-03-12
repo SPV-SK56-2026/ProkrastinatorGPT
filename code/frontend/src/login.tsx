@@ -1,9 +1,14 @@
-import { useState } from 'react'
+//import { useState } from 'react'
 import './App.css'
-import LayoutWrapper from './components/LayoutWrapper'
-import PageHeader from './components/PageHeader'
-import FormInput from './components/FormInput'
-import PrimaryButton from './components/PrimaryButton'
+import Header from './header'
+
+const observer = new ResizeObserver(() => {
+  window.parent.postMessage({ 
+    type: "RESIZE_IFRAME", 
+    height: document.body.scrollHeight 
+  }, "*");
+});
+observer.observe(document.body);
 
 
 interface Props {
@@ -19,23 +24,25 @@ function Login({ setPage }: Props) {
             <img src="icons/login.png" id="registerIcon" alt="register" />
         </div>
         <div className='formContainer'>
-            <form onSubmit={(e) => e.preventDefault()}>
-                <FormInput 
-                    label="Email" 
-                    type="email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                />
+            <form>
+                <div className="registerContainer">
+                    <label className="registerLabel">Email</label>
+                    <input
+                    className='registerInput'
+                    type='email'
+                    />
+                </div>
 
-                <FormInput 
-                    label="Geslo" 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                />
+                <div className="registerContainer">
+                    <label className="registerLabel">Geslo</label>
+                    <input
+                    className='registerInput'
+                    type='password'
+                    />
+                </div>
                 
                 <div className="registerContainer">
-                    <PrimaryButton>Prijava</PrimaryButton>
+                    <button className="btnSubmit">Prijava</button>
                     <div className="linksContainer">
                         <a
                         href='#'
@@ -54,7 +61,16 @@ function Login({ setPage }: Props) {
                 </div>
             </form>
         </div>
-    </LayoutWrapper>
+        <div className="btnWrapper">
+            <button
+                className="btnClose"
+                onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}
+            >
+                Zapri
+            </button>
+            </div>
+
+    </>
   )
 }
 export default Login
