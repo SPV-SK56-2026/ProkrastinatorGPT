@@ -5,6 +5,10 @@ import PageHeader from './components/PageHeader'
 import FormInput from './components/FormInput'
 import PrimaryButton from './components/PrimaryButton'
 
+interface Props {
+  setPage?: (page: string) => void;
+}
+
 function Register(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -37,7 +41,7 @@ function Register(){
                 <div className="registerContainer">
                     <PrimaryButton>Registracija</PrimaryButton>
                     <a
-                    href='#'
+                    href='#' onClick={() => setPage?.("login")} 
                     className='linkToLogin'>
                     Že imaš račun? Prijavi se
                     </a>

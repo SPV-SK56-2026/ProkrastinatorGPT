@@ -4,6 +4,10 @@ import LayoutWrapper from './components/LayoutWrapper'
 import PageHeader from './components/PageHeader'
 import PrimaryButton from './components/PrimaryButton'
 
+interface Props {
+  setPage?: (page: string) => void;
+}
+
 function Report(){
   const [report, setReport] = useState('')
 

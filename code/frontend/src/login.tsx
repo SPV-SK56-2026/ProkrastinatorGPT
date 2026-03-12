@@ -5,19 +5,19 @@ import PageHeader from './components/PageHeader'
 import FormInput from './components/FormInput'
 import PrimaryButton from './components/PrimaryButton'
 
-function Login(){
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const params = new URLSearchParams(window.location.search);
-    const noAssignment = params.get("noAssignment");
 
+interface Props {
+  setPage?: (page: string) => void;
+}
+
+function Login({ setPage }: Props) {
   return (
-    <LayoutWrapper isNoAssignment={!!noAssignment}>
-        <PageHeader 
-            title="Prijava" 
-            iconSrc="icons/login.png" 
-            iconId="registerIcon" 
-        />
+    <>
+        <Header setPage={setPage} />
+        <div id="titleContainer">
+            <span id="title">Prijava</span>
+            <img src="icons/login.png" id="registerIcon" alt="register" />
+        </div>
         <div className='formContainer'>
             <form onSubmit={(e) => e.preventDefault()}>
                 <FormInput 
@@ -39,12 +39,15 @@ function Login(){
                     <div className="linksContainer">
                         <a
                         href='#'
-                        className='linkToRegister'>
+                        className='linkToRegister'
+                          onClick={() => setPage?.("register")} >
+                          
                         Še nimaš računa? Registriraj se
                         </a>
                         <a
                         href='#'
-                        className='linkToPassChange'>
+                        className='linkToPassChange'
+                         onClick={() => setPage?.("forgot")} >
                         Pozabljeno geslo?
                         </a>
                     </div>
