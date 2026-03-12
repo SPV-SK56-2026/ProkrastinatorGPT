@@ -1,5 +1,4 @@
 #root {
-  width: 350px;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -14,7 +13,6 @@ body{
   font-size: medium;
   font-weight: 500;
   font-family: Aptos, sans-serif;
-  overflow: hidden;
 }
 
 .logo {
@@ -293,6 +291,7 @@ li::marker {
   align-items: center;
   color: #3d3d3d;
   padding: 2px 0 2px 0;
+  cursor: pointer;
 }
 .optionsIcons{
   width: 16px;

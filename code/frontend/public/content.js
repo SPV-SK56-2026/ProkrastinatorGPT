@@ -8,14 +8,14 @@ function createIndex(id) {
     position: fixed;
     top: 20px;
     right: 20px;
-    width: 400px;
     height: 0px;
     max-height: 90vh;
     border: none;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     z-index: 999999;
-    overflow: hidden;
+    width:30%;
+   
   `;
   document.body.appendChild(iframe);
 }
@@ -27,7 +27,6 @@ function createIframe() {
     position: fixed;
     top: 20px;
     right: 20px;
-    width: 400px;
     height: 0px;
     max-height: 90vh;
     border: none;

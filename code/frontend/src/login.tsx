@@ -10,28 +10,15 @@ const observer = new ResizeObserver(() => {
 });
 observer.observe(document.body);
 
-function Login(){
-    const params = new URLSearchParams(window.location.search);
-    const noAssignment = params.get("noAssignment");
 
-    if (noAssignment) {
-      return (
-        <>
-          <Header />
-          <div className="titleContainer">
-            Odpri katero koli nalogo na Moodle, da vidiš podrobnosti.
-          </div>
-          <div className="btnWrapper">
-            <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
-              Zapri
-            </button>
-          </div>
-        </>
-      );
-  }
+interface Props {
+  setPage?: (page: string) => void;
+}
+
+function Login({ setPage }: Props) {
   return (
     <>
-        <Header />
+        <Header setPage={setPage} />
         <div id="titleContainer">
             <span id="title">Prijava</span>
             <img src="icons/login.png" id="registerIcon" alt="register" />
@@ -59,7 +46,9 @@ function Login(){
                     <div className="linksContainer">
                         <a
                         href='#'
-                        className='linkToRegister'>
+                        className='linkToRegister'
+                          onClick={() => setPage?.("register")} >
+                          
                         Še nimaš računa? Registriraj se
                         </a>
                         <a
