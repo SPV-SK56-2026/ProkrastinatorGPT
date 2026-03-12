@@ -1,7 +1,7 @@
-//var PromptModel = // TO DO
+// controllers/promptController.js
 
-
-const {OpenAI} = require('openai');
+const { OpenAI } = require('openai');
+const { log, LogType } = require('../utils/logger');
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_AI_KEY,
@@ -10,15 +10,21 @@ const openai = new OpenAI({
 module.exports = {
 
     create: async function (req, res) {
+        const startTime = Date.now();
+        log(LogType.INFO, "Prejet nov zahtevek za analizo navodil.");
+
         try {
-            const {message} = req.body;
+            const { message } = req.body;
 
             if (!message) {
+                log(LogType.WARN, "Prejeto prazno besedilo naloge (400 Bad Request).");
                 return res.status(400).json({
                     success: false,
                     message: 'Manjka besedilo naloge'
                 });
             }
+
+            log(LogType.INFO, `Pošiljam podatke na OpenAI (vhod: ${message.length} znakov)...`);
 
             const Instructions = `
                 You are ProkrastinatorGPT, a smart homework analyzer built into a browser extension for Slovenian students. You read Moodle assignments and help students understand what they need to do and how to plan their work.
@@ -60,7 +66,11 @@ module.exports = {
                 response_format: { type: "json_object" }
             });
 
+            const duration = (Date.now() - startTime) / 1000;
+            log(LogType.SUCCESS, `OpenAI odgovoril v ${duration}s.`);
+
             const aiData = JSON.parse(completion.choices[0].message.content);
+            log(LogType.INFO, "Analiza uspešno poslana uporabniku.");
 
             return res.status(201).json({
                 success: true,
@@ -68,7 +78,7 @@ module.exports = {
             });
 
         } catch (err) {
-            console.error("Napaka v promptController", err);
+            log(LogType.ERROR, `Napaka v promptController: ${err.message}`);
             return res.status(500).json({
                 success: false,
                 message: "Napaka pri komunikaciji z AI",
@@ -77,31 +87,23 @@ module.exports = {
         }
     },
 
-    /**
-     * userController.list()
-     */
     list: function (req, res) {
+        log(LogType.INFO, "Klicana neimplementirana metoda list.");
         return res.json({ message: "List ni implementiran." });
     },
 
-    /**
-     * userController.show()
-     */
     show: function (req, res) {
+        log(LogType.INFO, "Klicana neimplementirana metoda show.");
         return res.json({ message: "Show ni implementiran." });
     },
 
-    /**
-     * userController.create()
-     */
     remove: function (req, res) {
+        log(LogType.INFO, "Klicana neimplementirana metoda remove.");
         return res.json({ message: "Remove ni implementiran." });
     },
 
-    /**
-     * userController.update()
-     */
     update: function (req, res) {
+        log(LogType.INFO, "Klicana neimplementirana metoda update.");
         return res.json({ message: "Update ni implementiran." });
     },
 
