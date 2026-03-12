@@ -8,14 +8,7 @@ import ForgotPassword from './forgotPassword.tsx'
 import ChangePassword from './changePassword.tsx'
 import Profile from './profile.tsx'
 import { useApp } from './AppContext.tsx'
-
-const observer = new ResizeObserver(() => {
-  window.parent.postMessage({ 
-    type: "RESIZE_IFRAME", 
-    height: document.body.scrollHeight 
-  }, "*");
-});
-observer.observe(document.body);
+import LayoutWrapper from './components/LayoutWrapper'
 
 function Index() {
   const { currentAssignment } = useApp();
@@ -51,14 +44,14 @@ function Index() {
       <Header setPage={setPage} />
       <div 
         className="holder description" 
-        dangerouslySetInnerHTML={{ __html: currentAssignment.description }}
+        dangerouslySetInnerHTML={{ __html: currentAssignment?.description || '' }}
       />
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
             <ul>
-              {currentAssignment.steps.map((step) => (
+              {currentAssignment?.steps.map((step) => (
                 <li key={step.id}>
                   <span className="blueText">{step.description}</span>
                 </li>
@@ -84,14 +77,22 @@ function Index() {
             </div>
             <div className="infoValue">{currentAssignment.estimatedTime}</div>
           </div>
+          <div className="infoValue">{currentAssignment?.difficulty}</div>
         </div>
+
+        <div className="infoBlock">
+          <div className="infoTitle">
+            <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
+            <span>Predviden čas</span>
+          </div>
+          <div className="infoValue">{currentAssignment?.estimatedTime}</div>
         <div className="btnWrapper">
           <button className="btnClose" onClick={() => window.parent.postMessage({ type: "CLOSE_IFRAME" }, "*")}>
             Zapri
           </button>
         </div>
       </div>
-    </>
+    </LayoutWrapper>
   )
 }
 export default Index
