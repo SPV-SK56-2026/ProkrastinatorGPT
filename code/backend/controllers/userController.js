@@ -61,8 +61,47 @@ module.exports = {
     /**
      * userController.update()
      */
-    update: function (req, res) {
-        //TO DO
+    update: async function (req, res) {
+        const id = req.params.id;
+        const { username, email, password } = req.body;
+
+        try {
+            // Check if user exists
+            const user = await UserModel.getById(id);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            // Prepare the update object
+            const updateData = {};
+            // Check if username was provided for change
+            if (username) updateData.username = username;
+            // Check if email was provided for change
+            if (email) updateData.email = email;
+
+            // Password hashing if changed
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+                updateData.password_hash = await bcrypt.hash(password, salt);
+            }
+
+            // Check if there is actually anything to update
+            if (Object.keys(updateData).length === 0) {
+                return res.status(400).json({ message: 'No fields provided for update' });
+            }
+
+            // Perform the update
+            const updatedUser = await UserModel.update(id, updateData);
+
+            return res.status(200).json({
+                message: 'User updated successfully',
+                user: updatedUser
+            });
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error updating user', error: err.message });
+        }
     },
 
     /**
