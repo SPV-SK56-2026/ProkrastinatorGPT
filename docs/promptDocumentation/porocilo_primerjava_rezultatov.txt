@@ -1,0 +1,331 @@
+POROČILO: PRIMERJAVA PRIČAKOVANIH IN DEJANSKIH IZHODOV AI
+Browser Extension — AI Prompt Engineering Ekipa
+==================================================
+Datum: 10. 3. 2026
+Pripravil: Val
+Verzija prompta pri testiranju: v5 (najnovejša)
+
+
+LEGENDA OCEN
+------------
+  OK  — izhod ustreza pričakovanemu
+  DEL — delno ustreza (manjša odstopanja)
+  NOK — ne ustreza pričakovanemu
+
+
+==================================================
+TP-001 | N01-MPI_1 | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     medium
+  estimated_time: 3.0–5.0 ur
+
+Dejansko (v5):
+  tezavnost:      5/10
+  cas_min/max:    3–6 ur
+
+Ocena težavnosti:  DEL  — v5 vrača 5/10, kar je na spodnji meji "medium". Konzistentno
+                          med vsemi verzijami (4–6/10). Pričakujemo bolj jasno medium.
+Ocena časa:        OK   — 3–6 ur je v sprejemljivem razponu pričakovanih 3–5 ur.
+Opis (summary):    OK   — pokriva vzporednost, matriko, f1 in f2.
+Bullet točke:      OK   — pokrite so f1, f2, vzporednost, čas, izpis.
+
+Skupna ocena TP-001: DEL
+
+
+==================================================
+TP-002 | N02-MPI_2 | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     medium
+  estimated_time: 4.0–6.0 ur
+
+Dejansko (v5):
+  tezavnost:      6/10
+  cas_min/max:    4–8 ur
+
+Ocena težavnosti:  OK   — 6/10 ustreza "medium/high", kar je korektno za MPI nalogo z
+                          večkratnimi klici funkcij.
+Ocena časa:        DEL  — cas_max 8 ur je nad pričakovanim maksimumom 6 ur. Nekoliko
+                          previsoka ocena.
+Opis:              OK   — MPI, vzporedno, f1/f2/f3, čas izvajanja — vse pokrito.
+Bullet točke:      OK   — 5 jasnih korakov z MPI_Reduce, MPI_Wtime, f1/f2/f3.
+
+Skupna ocena TP-002: DEL
+
+
+==================================================
+TP-003 | N03-MPI_3 | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     high
+  estimated_time: 5.0–8.0 ur
+
+Dejansko (v5):
+  tezavnost:      5/10
+  cas_min/max:    2–4 ur
+
+Ocena težavnosti:  NOK  — 5/10 je "medium", pričakujemo "high". AI ne prepozna
+                          fizičnega/infrastrukturnega dela (SSH, hosts, dva računalnika)
+                          kot faktor visoke težavnosti.
+Ocena časa:        NOK  — 2–4 ur je bistveno premalo. SSH konfiguracija + MPI setup na
+                          dveh računalnikih realno zahteva 5–8 ur.
+Opis:              DEL  — omeni dva računalnika in konfiguracijo, ne poudari pa
+                          tehničnih izzivov (SSH, hosts, network setup).
+Bullet točke:      DEL  — koraki so logični, a manjka korak za SSH/omrežno konfiguracijo
+                          pri nekaterih verzijah.
+
+Skupna ocena TP-003: NOK
+Opomba za člana #1: Potrebna iteracija prompta — dodati kriterij za "fizična infrastruktura
+= višja težavnost". Primer: "Če naloga zahteva konfigurацijo dveh ali več fizičnih naprav,
+je težavnost vsaj 7/10."
+
+
+==================================================
+TP-004 | Vaja 1 - Kompresija zaporednih vrednosti | Kategorija C
+==================================================
+Pričakovano:
+  difficulty:     low
+  estimated_time: 2.0–3.0 ur
+
+Dejansko (v5):
+  tezavnost:      3/10
+  cas_min/max:    3–6 ur
+
+Ocena težavnosti:  OK   — 3/10 ustreza "low". Konzistentno.
+Ocena časa:        DEL  — cas_max 6 ur je previsok. Naloga je vredna 4% in zahteva
+                          le implementacijo + kratko poročilo. Realen čas 2–4 ur.
+Opis:              OK   — pokrita implementacija, poročilo, zip oddaja.
+Bullet točke:      OK   — jasni koraki.
+
+Skupna ocena TP-004: DEL
+
+
+==================================================
+TP-005 | Vaja 2 - DCT + RLE kompresija slik | Kategorija C
+==================================================
+Pričakovano:
+  difficulty:     high
+  estimated_time: 8.0–12.0 ur
+
+Dejansko (v5):
+  tezavnost:      6/10
+  cas_min/max:    8–14 ur
+
+Ocena težavnosti:  DEL  — 6/10 je na meji med medium in high. Naloga vključuje DCT +
+                          RLE + GUI + barvne slike — pričakujemo 7–8/10.
+Ocena časa:        OK   — 8–14 ur je v razumnem razponu pričakovanih 8–12 ur.
+Opis:              OK   — DCT, RLE, faktor stiskanja, kompresijsko razmerje — vse pokrito.
+Bullet točke:      OK   — 6 korakov, logično zaporedje.
+
+Skupna ocena TP-005: DEL
+
+
+==================================================
+TP-006 | Vaja 3 - Kompresija zvoka | Kategorija C
+==================================================
+Pričakovano:
+  difficulty:     high
+  estimated_time: 10.0–15.0 ur
+
+Dejansko (v5):
+  tezavnost:      6/10
+  cas_min/max:    8–20 ur
+
+Ocena težavnosti:  DEL  — 6/10 podcenjuje kompleksnost MDCT + stereo + WAV.
+                          Pričakujemo 8–9/10.
+Ocena časa:        DEL  — razpon 8–20 ur je preširok in neuporaben. Boljše bi bilo
+                          10–15 ur z jasnejšo utemeljitvijo.
+Opis:              OK   — MDCT, stereo, 16-bit, M in N parametra — pokrito.
+Bullet točke:      OK   — 6 jasnih korakov.
+
+Skupna ocena TP-006: DEL
+Opomba: Širok razpon časa (npr. 8–20) kaže na negotovost AI-ja. Razmisliti o dodajanju
+v prompt: "cas_max - cas_min ne sme presegati 8 ur."
+
+
+==================================================
+TP-007 | Naloga 05 - Razpisni dokument | Kategorija B
+==================================================
+Pričakovano:
+  difficulty:     low
+  estimated_time: 2.0–3.0 ur
+
+Dejansko (v5):
+  tezavnost:      4/10
+  cas_min/max:    4–7 ur
+
+Ocena težavnosti:  DEL  — 4/10 je višje od pričakovane "low" (1–3). AI oceni nalogo
+                          previsoko ker vidi "iskanje + analiza + pisanje".
+Ocena časa:        NOK  — 4–7 ur je previsoko za enostavno organizacijsko nalogo.
+                          Realen čas 2–3 ur.
+Opis:              OK   — iskanje razpisov, lastni razpis, usklajenost s projektom.
+Bullet točke:      OK   — logični koraki.
+
+Skupna ocena TP-007: DEL
+
+
+==================================================
+TP-008 | Naloga 06 - Razgovori | Kategorija B
+==================================================
+Pričakovano:
+  difficulty:     low
+  estimated_time: 2.0–4.0 ur
+
+Dejansko (v5):
+  tezavnost:      4/10
+  cas_min/max:    3–5 ur
+
+Ocena težavnosti:  DEL  — 4/10 je malce visoko za netehniško nalogo, a sprejemljivo.
+Ocena časa:        OK   — 3–5 ur je v razumnem razponu pričakovanih 2–4 ur.
+Opis:              OK   — vloga delodajalca, MS Teams, kamera, 3 razgovori.
+Bullet točke:      OK   — 5 jasnih korakov z oddajo posnetkov.
+
+Skupna ocena TP-008: DEL
+
+
+==================================================
+TP-009 | Naloga 04 - Europass CV | Kategorija B
+==================================================
+Pričakovano:
+  difficulty:     low
+  estimated_time: 1.0–2.0 ur
+
+Dejansko (v5):
+  tezavnost:      3/10
+  cas_min/max:    2–4 ur
+
+Ocena težavnosti:  OK   — 3/10 ustreza "low".
+Ocena časa:        DEL  — 2–4 ur je višje od pričakovanih 1–2 ur. AI vključuje čas
+                          za revizijo in prilagoditev, kar je smiselno.
+Opis:              OK   — Europass, realen scenarij, izkušnje.
+Bullet točke:      OK   — 5 jasnih korakov.
+
+Skupna ocena TP-009: DEL
+
+
+==================================================
+TP-010 | Vaja 1: Lovci na zaklade | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     medium
+  estimated_time: 3.0–5.0 ur
+
+Dejansko (v5):
+  tezavnost:      6/10
+  cas_min/max:    4–8 ur
+
+Ocena težavnosti:  DEL  — 6/10 je na zgornji meji "medium". Sprejemljivo.
+Ocena časa:        DEL  — cas_max 8 ur je nad pričakovanim 5 ur.
+Opis:              OK   — izčrpno iskanje, branje datoteke, C++/Python, ZIP.
+Bullet točke:      OK   — 5 logičnih korakov.
+
+Skupna ocena TP-010: DEL
+
+
+==================================================
+TP-011 | Vaja 2: Pomorska flota | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     medium
+  estimated_time: 4.0–6.0 ur
+
+Dejansko (v5):
+  tezavnost:      5/10
+  cas_min/max:    4–8 ur
+
+Ocena težavnosti:  OK   — 5/10 ustreza "medium".
+Ocena časa:        DEL  — cas_max 8 ur je rahlo previsok. Pričakujemo do 6 ur.
+Opis:              OK   — DSU, path compression, union by rank, branje, ZIP.
+Bullet točke:      OK   — stack overflow opomba prisotna (v5).
+
+Skupna ocena TP-011: DEL
+
+
+==================================================
+TP-012 | Vaja 3: Štorkljino gnezdo | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     high
+  estimated_time: 6.0–10.0 ur
+
+Dejansko (v5):
+  tezavnost:      6/10
+  cas_min/max:    4–8 ur
+
+Ocena težavnosti:  DEL  — 6/10 je prenizko za nalogo s 13 točkami in specifičnim
+                          opozorilom glede off-by-one.
+Ocena časa:        NOK  — 4–8 ur je pod pričakovanim minimumom 6 ur za to nalogo.
+Opis:              OK   — učinkovita rešitev, C++, Release build, robni primer.
+Bullet točke:      OK   — off-by-one opozorilo je prisotno.
+
+Skupna ocena TP-012: DEL
+
+
+==================================================
+TP-013 | Vaja 4: Pirati | Kategorija A
+==================================================
+Pričakovano:
+  difficulty:     high
+  estimated_time: 8.0–14.0 ur
+
+Dejansko (v5):
+  tezavnost:      7/10
+  cas_min/max:    6–12 ur
+
+Ocena težavnosti:  OK   — 7/10 ustreza "high". Najboljša ocena med vsemi nalogami.
+Ocena časa:        DEL  — 6–12 ur je rahlo pod pričakovanim 8–14 ur, a sprejemljivo.
+Opis:              OK   — DP, optimizacija za TP3, prepoved grobe sile, ZIP.
+Bullet točke:      OK   — posebno tabeliranje za vrstico je omenjeno.
+
+Skupna ocena TP-013: DEL
+
+
+==================================================
+ZBIRNI PREGLED VSEH TESTNIH PRIMEROV
+==================================================
+
+  ID       Pričakovana    Dejanska     Cas pričak.  Cas dejanski  Opis   Bullet  Skupaj
+           težavnost      (v5)         (ur)         (ur, v5)
+  TP-001   medium         5/10 (DEL)   3–5          3–6  (OK)     OK     OK      DEL
+  TP-002   medium         6/10 (OK)    4–6          4–8  (DEL)    OK     OK      DEL
+  TP-003   high           5/10 (NOK)   5–8          2–4  (NOK)    DEL    DEL     NOK
+  TP-004   low            3/10 (OK)    2–3          3–6  (DEL)    OK     OK      DEL
+  TP-005   high           6/10 (DEL)   8–12         8–14 (OK)     OK     OK      DEL
+  TP-006   high           6/10 (DEL)   10–15        8–20 (DEL)    OK     OK      DEL
+  TP-007   low            4/10 (DEL)   2–3          4–7  (NOK)    OK     OK      DEL
+  TP-008   low            4/10 (DEL)   2–4          3–5  (OK)     OK     OK      DEL
+  TP-009   low            3/10 (OK)    1–2          2–4  (DEL)    OK     OK      DEL
+  TP-010   medium         6/10 (DEL)   3–5          4–8  (DEL)    OK     OK      DEL
+  TP-011   medium         5/10 (OK)    4–6          4–8  (DEL)    OK     OK      DEL
+  TP-012   high           6/10 (DEL)   6–10         4–8  (NOK)    OK     OK      DEL
+  TP-013   high           7/10 (OK)    8–14         6–12 (DEL)    OK     OK      DEL
+
+Skupaj:   OK: 4   DEL: 7   NOK: 2     OK: 3   DEL: 8   NOK: 2
+
+
+==================================================
+ZAKLJUČKI IN PRIPOROČILA ZA ČLANA #1
+==================================================
+
+1. OPIS IN BULLET TOČKE — ODLIČNO
+   Pri vseh 13 primerih AI generira smiseln opis in ustrezne bullet točke.
+   Ni potrebne intervencije v promptu za ta dva elementa.
+
+2. OCENA TEŽAVNOSTI — POTREBNA POPRAVILA
+   - AI sistematično podcenjuje težavnost pri: infrastrukturnih nalogah (TP-003),
+     organizacijskih nalogah (TP-007, TP-008) in zahtevnih algoritmih (TP-012).
+   - Predlog za prompt: Dodati eksplicitne kriterije za vsako težavnostno stopnjo.
+     Primer: "Naloge z infrastrukturo (SSH, omrežje, fizični računalniki) = min 7/10.
+     Organizacijske naloge brez kode = max 4/10."
+
+3. OCENA ČASA — POTREBNA POPRAVILA
+   - AI pogosto vrne preširoke razpone (npr. 8–20 ur).
+   - AI sistematično preceni čas za kratke naloge (B kategorija).
+   - AI podceni čas za infrastrukturne naloge (TP-003).
+   - Predlog za prompt: "Razlika med cas_max in cas_min naj ne presega 6 ur.
+     Za organizacijske naloge brez kode: cas_max ne sme preseči 5 ur."
+
+4. NAJPOMEMBNEJŠI TESTNI PRIMER ZA NASLEDNJO ITERACIJO
+   TP-003 je edini NOK pri obeh merilih (težavnost in čas). Priporoča se, da
+   se iteracija prompta začne pri tem primeru.

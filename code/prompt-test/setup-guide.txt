@@ -1,0 +1,10 @@
+> npm init -y
+> npm install express openai dotenv
+
+Dodaj "type": "module" v package.json (če še ni)
+
+> echo "OPENAI_API_KEY=sk-xxxx" > .env
+
+> node server.js
+
+Odpri localhost:3000

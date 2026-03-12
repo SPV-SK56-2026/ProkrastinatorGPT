@@ -1,0 +1,21 @@
+Before generating JSON, briefly analyze this assignment (3-5 sentences):
+1. What TYPE of task is this?
+2. What is the PRIMARY deliverable?
+3. Any HIDDEN requirements?
+4. What will the student STRUGGLE with most?
+5. Time by phase: research / doing / reviewing
+
+Then output ONLY this JSON (nothing after it):
+
+{
+  "opis": "2-3 sentences in Slovenian based on your analysis",
+  "poudarki_opis": ["exact substring of opis", "exact substring of opis"],
+  "koraki": [
+    { "besedilo": "Step starting with action verb.", "poudarek": "exact substring of this besedilo" }
+  ],
+  "tezavnost": 5,
+  "cas_min": 2,
+  "cas_max": 4
+}
+
+CRITICAL: poudarki_opis items must be exact substrings of opis. poudarek must be exact substring of its besedilo.
