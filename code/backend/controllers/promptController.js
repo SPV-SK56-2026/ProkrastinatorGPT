@@ -135,7 +135,9 @@ RULES:
                     difficulty: aiData.tezavnost,
                     estimated_minutes: (aiData.cas_max || 1) * 60,
                     is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
+
                 });
+                log(LogType.SUCCESS, "Assignment shranjen.");
             } catch (dbErr) {
                 log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${dbErr.message}`);
                 // Fallback: če baza ne uspe shraniti, ustvarimo objekt z ID-jem ročno za nadaljevanje
