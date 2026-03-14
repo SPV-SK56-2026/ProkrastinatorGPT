@@ -34,10 +34,10 @@ module.exports = {
      * userController.create()
      */
     create: async function (req, res) {
-        const { username, email, password } = req.body;
+        const {email, password } = req.body;
         log(LogType.INFO, `Poskus registracije novega uporabnika: ${email}`);
 
-        if (!username || !email || !password) {
+        if (!email || !password) {
             log(LogType.WARN, "Registracija neuspešna: Manjkajo obvezna polja.");
             return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -57,12 +57,11 @@ module.exports = {
 
             // Shranjevanje v bazo
             const newUser = await UserModel.create({
-                username,
                 email,
                 password_hash: hashed
             });
 
-            log(LogType.SUCCESS, `Uporabnik ${username} uspešno ustvarjen z ID: ${newUser.id || 'N/A'}`);
+            log(LogType.SUCCESS, `Uporabnik z ${email} uspešno ustvarjen z ID: ${newUser.id || 'N/A'}`);
             return res.status(201).json(newUser);
         } catch (err) {
             log(LogType.ERROR, `Napaka pri ustvarjanju uporabnika: ${err.message}`);
@@ -75,8 +74,8 @@ module.exports = {
      */
     update: async function (req, res) {
         const id = req.params.id;
-        const idFromToken = req.userData.id;
-        const { username, email, password } = req.body;
+        const idFromToken = req.userData ? req.userData.id : null;
+        const {email, password } = req.body;
         log(LogType.INFO, `Poskus posodobitve uporabnika z ID: ${id}`);
 
         try {
@@ -88,7 +87,7 @@ module.exports = {
             }
 
             // Check if active user is updating his profile
-            if (id !== idFromToken.toString()) {
+            if (String(id) !== String(idFromToken)) {
                 return res.status(403).json({ 
                     message: "No permission to update this profile." 
                 });
@@ -96,7 +95,6 @@ module.exports = {
 
             // Prepare the update object
             const updateData = {};
-            if (username) updateData.username = username;
             if (email) updateData.email = email;
 
             if (password) {
@@ -163,7 +161,7 @@ module.exports = {
         //TO DO
     },
 
-    login: async function (req, res) {/*
+    login: async function (req, res) {
     const { email, password } = req.body;
     try {
         const user = await UserModel.getByEmail(email);
@@ -171,19 +169,20 @@ module.exports = {
 
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
-        */
+        
+        const payload = {id: user.id, email: user.email };
         // Generate the token
         const token = jwt.sign(
-            { id: user.id, email: user.email }, // Data inside the token
-            process.env.JWT_SECRET,             // Your secret key
-            { expiresIn: '2h' }                 // Expiration time
+            payload ,                        // Data inside the token
+            process.env.JWT_SECRET,             // Secret key
+            { expiresIn: '1d' }                 // Expiration time
         );
 
-        res.json({ token, user: { id: user.id, username: user.username } });
-        /*
+        return res.json({ token, user: payload });
+        
     } catch (err) {
-        res.status(500).json({ error: err.message });
-    } */
+        return res.status(500).json({ error: err.message });
+    } 
 },
 
     profile: function(req, res,next){
