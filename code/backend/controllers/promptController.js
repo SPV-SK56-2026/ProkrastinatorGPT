@@ -46,12 +46,9 @@ module.exports = {
             // Konstruiramo vsebino za AI
             const fullMessage = `ROK: ${timeRemaining || 'Ni podano'}\n\nNAVODILA:\n${description}`;
 
-            // Nastavimo parametre, ki jih pričakuje tvoja create funkcija
+            // Nastavimo parametre za 'create' - ključno: uporabimo 'id' iz req.body
             req.body.message = fullMessage;
-            req.body.moodle_id = id;
-
-            // OPOMBA: Če tvoj 'create' nujno potrebuje user_id,
-            // ga tukaj pridobi iz seje, npr.: req.body.user_id = req.user.id;
+            req.body.assignment_id = id;
 
             // 3. Pokličemo create funkcijo
             return module.exports.create(req, res);
@@ -61,21 +58,21 @@ module.exports = {
             return res.status(500).json({ success: false, error: err.message });
         }
     },
+
     create: async function (req, res) {
-        const startTime = Date.now();
         log(LogType.INFO, "Začetek celovite obdelave (Assignment + Response).");
 
         try {
-            const { message, moodle_id } = req.body;
+            const { message, assignment_id } = req.body;
 
             // Če user_id ni podan, nastavimo na null ali privzeto vrednost 1
             const user_id = req.body.user_id || (req.user ? req.user.id : 1);
 
-            if (!message) {
-                return res.status(400).json({ success: false, message: 'Manjka besedilo naloge' });
+            if (!message || !assignment_id) {
+                return res.status(400).json({ success: false, message: 'Manjkajo podatki za obdelavo (message ali assignment_id)' });
             }
 
-            log(LogType.INFO, `Pošiljam na OpenAI za nalogo ID: ${moodle_id}...`);
+            log(LogType.INFO, `Pošiljam na OpenAI za nalogo ID: ${assignment_id}...`);
 
             const Instructions = `
             You are ProkrastinatorGPT, a smart homework analyzer built into a browser extension for students. You read Moodle assignments and help students understand what they need to do and how to plan their work.
@@ -126,30 +123,26 @@ RULES:
                 .join('\n');
 
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
-            let newAssignment;
             try {
-                newAssignment = await assignmentRepository.create({
-                    id: moodle_id,
+                await assignmentRepository.create({
+                    id: assignment_id, // Uporabimo ID, ki ga je preprocess prejel iz req.body.id
                     title: aiData.naslov || "Nova naloga",
                     explanation: aiData.opis,
                     difficulty: aiData.tezavnost,
                     estimated_minutes: (aiData.cas_max || 1) * 60,
                     is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
-
                 });
                 log(LogType.SUCCESS, "Assignment shranjen.");
             } catch (dbErr) {
                 log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${dbErr.message}`);
-                // Fallback: če baza ne uspe shraniti, ustvarimo objekt z ID-jem ročno za nadaljevanje
-                newAssignment = { id: moodle_id };
+                // Nadaljujemo, ker morda naloga že obstaja
             }
 
             // --- 2. SHRANJEVANJE V TABELO RESPONSES ---
-            // Ne smemo failat, če ni user_id ali če response repository javi napako
             try {
                 await responseRepository.create({
-                    user_id: user_id, // Če je null, bo uporabil tisto, kar dovoljuje baza (ali 1)
-                    assignment_id: moodle_id,
+                    user_id: user_id,
+                    assignment_id: assignment_id, // Isti ID kot zgoraj, da zadostimo FK pogoju
                     summary_text: aiData.opis,
                     steps_text: stepsAsPlainText,
                     difficulty_assessment: aiData.tezavnost,
@@ -157,12 +150,12 @@ RULES:
                 });
                 log(LogType.SUCCESS, "Response shranjen.");
             } catch (respErr) {
-                log(LogType.WARN, `Response ni bil shranjen (vseeno nadaljujem): ${respErr.message}`);
+                log(LogType.ERROR, `Response ni bil shranjen: ${respErr.message}`);
             }
 
             return res.status(201).json({
                 success: true,
-                assignment_id: moodle_id,
+                assignment_id: assignment_id,
                 data: aiData
             });
 
