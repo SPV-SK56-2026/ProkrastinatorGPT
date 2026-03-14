@@ -66,15 +66,12 @@ module.exports = {
         log(LogType.INFO, "Začetek celovite obdelave (Assignment + Response).");
 
         try {
-            // moodle_id pride iz preprocess, description je zdaj v 'message'
             const { message, moodle_id } = req.body;
 
-            // Poskusimo dobiti user_id, če ga ni, nastavimo na null ali privzeto vrednost
-            // (Preveri če tvoja baza v tabeli responses dovoljuje user_id = null)
-            const user_id = req.body.user_id || (req.user ? req.user.id : null);
+            // Če user_id ni podan, nastavimo na null ali privzeto vrednost 1
+            const user_id = req.body.user_id || (req.user ? req.user.id : 1);
 
             if (!message) {
-                log(LogType.WARN, "Create: Manjka vsebina (message).");
                 return res.status(400).json({ success: false, message: 'Manjka besedilo naloge' });
             }
 
@@ -82,15 +79,35 @@ module.exports = {
 
             const Instructions = `
             You are ProkrastinatorGPT, a smart homework analyzer built into a browser extension for students. You read Moodle assignments and help students understand what they need to do and how to plan their work.
-            Return ONLY valid JSON. No markdown fences, no explanation.
-            RULES:
-            - "naslov": Short 2-4 word title in Slovenian.
-            - "opis": 2-4 sentences explaining the goal.
-            - "poudarki_opis": highlight important parts (must be substrings of opis).
-            - "koraki": 3-7 steps with "besedilo" and "poudarek".
-            - "tezavnost": 1-10 integer.
-            - "cas_min/cas_max": realistic hours.
-        `;
+
+Return ONLY valid JSON. No markdown fences, no explanation.
+
+EXAMPLE OUTPUT:
+{
+  "naslov": "Izdelava organizacijskega diagrama",
+  "opis": "Naloga zahteva izdelavo organizacijskega diagrama podjetja, ki prikazuje strukturo in naloge posameznikov ali oddelkov. Priložiti je treba log chata, ki dokazuje, da so vsi člani ekipe sodelovali.",
+  "poudarki_opis": ["organizacijskega diagrama", "log chata"],
+  "koraki": [
+    { "besedilo": "Zbrati informacije o strukturi podjetja in nalogah oddelkov.", "poudarek": "informacije o strukturi podjetja" },
+    { "besedilo": "Izdelati organizacijski diagram s hierarhijo in odgovornostmi.", "poudarek": "organizacijski diagram" },
+    { "besedilo": "Sodelovati v ekipi in se dogovoriti o vsebini diagrama.", "poudarek": "Sodelovati v ekipi" },
+    { "besedilo": "Zabeležiti log chata kot dokaz aktivnega sodelovanja.", "poudarek": "log chata" },
+    { "besedilo": "Oddati diagram in log chata v skupni datoteki.", "poudarek": "skupni datoteki" }
+  ],
+  "tezavnost": 4,
+  "cas_min": 2,
+  "cas_max": 3
+}
+
+RULES:
+- "naslov": Short 2-4 word title in Slovenian.
+- "opis": 2-4 sentences explaining the real goal. Summarize WHAT must be done, WITH WHAT tools/format, and WHAT must be submitted.
+- "poudarki_opis": highlight EVERYTHING important — what the task requires, how to do it, and what to submit. Each key requirement gets its own highlight. All must be EXACT substrings of "opis".
+- "koraki": 3-7 steps, each starting with an action verb.
+- "poudarek": EXACT substring of its "besedilo" — the most meaningful phrase (action + object), e.g. "Zbrati informacije" or "Oddati diagram in log chata". Not just a single verb.
+- "tezavnost": 1-10 integer, based on time needed to complete (1 < 30min, 5 = ~4/5h, 10 = semester-long project (weeks of work)). Tasks requiring physical infrastructure (SSH, network config, multiple machines) = minimum 6.
+- "cas_min/cas_max": realistic hours (research + doing + reviewing). cas_max - cas_min must not exceed 6 (For semester long projects must not exceed 20).
+`;
 
             const completion = await openai.chat.completions.create({
                 model: "gpt-4o-mini",
@@ -109,9 +126,9 @@ module.exports = {
                 .join('\n');
 
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
-            let assignment;
+            let newAssignment;
             try {
-                assignment = await assignmentRepository.create({
+                newAssignment = await assignmentRepository.create({
                     id: moodle_id,
                     title: aiData.naslov || "Nova naloga",
                     explanation: aiData.opis,
@@ -119,38 +136,27 @@ module.exports = {
                     estimated_minutes: (aiData.cas_max || 1) * 60,
                     is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
                 });
-                log(LogType.INFO, "Assignment uspešno shranjen/posodobljen.");
             } catch (dbErr) {
-                log(LogType.ERROR, `Napaka pri shranjevanju naloge: ${dbErr.message}`);
-                // Če shranjevanje v assignments spodleti, vrnemo vsaj AI podatke, da uporabnik ne čaka zaman
-                return res.status(201).json({ success: true, data: aiData, warning: "Database sync failed" });
+                log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${dbErr.message}`);
+                // Fallback: če baza ne uspe shraniti, ustvarimo objekt z ID-jem ročno za nadaljevanje
+                newAssignment = { id: moodle_id };
             }
 
             // --- 2. SHRANJEVANJE V TABELO RESPONSES ---
-            // Uporabimo moodle_id kot referenco. Če user_id ni, shranimo pod "sistemskega" uporabnika (npr. ID 1)
-            // ali pa pogojno preskočimo, če baza ne dovoljuje null.
-            if (assignment) {
-                try {
-                    const targetUserId = user_id || 1; // Če ni userja, pripiši "sistemskemu" ID 1
-
-                    await responseRepository.create({
-                        user_id: targetUserId,
-                        assignment_id: moodle_id,
-                        summary_text: aiData.opis,
-                        steps_text: stepsAsPlainText,
-                        difficulty_assessment: aiData.tezavnost,
-                        estimated_minutes: (aiData.cas_max || 1) * 60
-                    });
-                    log(LogType.SUCCESS, `Response shranjen za uporabnika ${targetUserId}.`);
-                } catch (respErr) {
-                    // Logiramo napako, a ne ustavimo procesa (user mora dobiti odgovor!)
-                    log(LogType.WARN, `Response ni bil shranjen: ${respErr.message}`);
-                }
+            // Ne smemo failat, če ni user_id ali če response repository javi napako
+            try {
+                await responseRepository.create({
+                    user_id: user_id, // Če je null, bo uporabil tisto, kar dovoljuje baza (ali 1)
+                    assignment_id: moodle_id,
+                    summary_text: aiData.opis,
+                    steps_text: stepsAsPlainText,
+                    difficulty_assessment: aiData.tezavnost,
+                    estimated_minutes: (aiData.cas_max || 1) * 60
+                });
+                log(LogType.SUCCESS, "Response shranjen.");
+            } catch (respErr) {
+                log(LogType.WARN, `Response ni bil shranjen (vseeno nadaljujem): ${respErr.message}`);
             }
-
-            // Končni uspeh - vrnemo podatke frontendu
-            const duration = Date.now() - startTime;
-            log(LogType.INFO, `Obdelava končana v ${duration}ms.`);
 
             return res.status(201).json({
                 success: true,
@@ -159,7 +165,7 @@ module.exports = {
             });
 
         } catch (err) {
-            log(LogType.ERROR, `Kritična napaka v create: ${err.message}`);
+            log(LogType.ERROR, `Kritična napaka: ${err.message}`);
             return res.status(500).json({ success: false, error: err.message });
         }
     },
