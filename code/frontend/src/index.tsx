@@ -18,14 +18,21 @@ const observer = new ResizeObserver(() => {
 observer.observe(document.body);
 
 function Index() {
-  const { currentAssignment } = useApp();
+  const { currentAssignment, isLoading, error } = useApp();
   const [page, setPage] = useState("home");
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
 
+  if (isLoading) return (
+    <div className="loaderWrapper">
+      <div className="throbber" />
+    </div>
+  );
+
+
   if (page === "report") return <Report setPage={setPage} />;
   if (page === "register") return <Register setPage={setPage} />;
-  if (page === "login") return <Login setPage={setPage} />;
+  if (error === "login" || page === "login") return <Login setPage={setPage} />;
   if (page === "forgot") return <ForgotPassword setPage={setPage} />;
   if (page === "change") return <ChangePassword setPage={setPage} />;
   if (page === "profile") return <Profile setPage={setPage} />;
@@ -43,10 +50,10 @@ function Index() {
             <p className="blueTitle">Potek reševanja</p>
             <ul>
               {currentAssignment?.steps.map((step) => (
-                <li key={step.id}>
-                  <span className="blueText">{step.description}</span>
-                </li>
-              ))}
+              <li key={step.id}>
+                <span dangerouslySetInnerHTML={{ __html: step.description }} />
+              </li>
+            ))}
             </ul>
           </div>
         </div>

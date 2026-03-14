@@ -26,8 +26,7 @@ export const mockAssignment: Assignment = {
 };
 
 export const mockUser: User = {
-  id: "u1",
-  name: "Janez Novak",
+  id: 1,
   email: "janez.novak@example.com",
   isLoggedIn: true
 };

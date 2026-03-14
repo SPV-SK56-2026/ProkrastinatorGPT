@@ -21,7 +21,7 @@ function Login({ setPage }: Props) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/login', {
+      const response = await fetch('https://www.goprokrastinator.org/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -29,10 +29,11 @@ function Login({ setPage }: Props) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Prijava uspešna:', data);
-        alert('Uspešno si se prijavil!');
+        console.log(data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
         setPage?.("home");
-      } else {
+      }else {
         alert('Napaka pri prijavi. Preveri podatke.');
       }
     } catch (error) {

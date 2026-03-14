@@ -21,7 +21,7 @@ function Register({ setPage }: Props) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/register', {
+      const response = await fetch('https://www.goprokrastinator.org/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
