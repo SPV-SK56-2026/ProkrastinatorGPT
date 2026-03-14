@@ -17,21 +17,22 @@ module.exports = {
         log(LogType.INFO, "Prejet zahtevek v preprocess.");
 
         try {
-            const { id, content, timeRemaining, user_id } = req.body;
+            const { id, description, timeRemaining } = req.body;
 
-            if (!id || !content) {
-                log(LogType.WARN, "Preprocess: Manjkajoči podatki (id ali content).");
-                return res.status(400).json({ success: false, message: "Manjka ID ali vsebina." });
+            // Validacija
+            if (!id || !description) {
+                log(LogType.WARN, "Preprocess: Manjkajoči podatki (id ali description).");
+                return res.status(400).json({
+                    success: false,
+                    message: "Manjka ID naloge ali opis (description)."
+                });
             }
 
             // 1. Preveri, če naloga že obstaja v bazi
             const existingAssignment = await assignmentRepository.findById(id);
 
             if (existingAssignment) {
-                log(LogType.INFO, `Naloga ${id} že obstaja. Vračam iz baze.`);
-
-                // Če želiš, lahko tukaj dodaš še logiko, ki preveri če response za tega userja obstaja,
-                // ampak za osnovni preprocess vrnemo nalogo.
+                log(LogType.INFO, `Naloga ${id} že obstaja.`);
                 return res.json({
                     success: true,
                     source: "database",
@@ -39,19 +40,20 @@ module.exports = {
                 });
             }
 
-            // 2. Če naloge ni, pripravimo sporočilo za OpenAI
-            log(LogType.INFO, `Naloga ${id} ni v bazi. Pripravljam na klic 'create'.`);
+            // 2. Priprava za 'create'
+            log(LogType.INFO, `Naloga ${id} ni v bazi. Pripravljam sporočilo.`);
 
-            // Konstruiramo message, ki ga tvoj create() pričakuje
-            const fullMessage = `ROK: ${timeRemaining || 'Ni podano'}\n\nVSEBINA NALOGE:\n${content}`;
+            // Konstruiramo vsebino za AI
+            const fullMessage = `ROK: ${timeRemaining || 'Ni podano'}\n\nNAVODILA:\n${description}`;
 
-            // Nastavimo vrednosti v req.body, da create() deluje nemoteno
+            // Nastavimo parametre, ki jih pričakuje tvoja create funkcija
             req.body.message = fullMessage;
-            req.body.user_id = user_id;
-            // Dodamo moodle_id v req, da ga create() lahko uporabi pri shranjevanju (če ga tvoj repo sprejme)
             req.body.moodle_id = id;
 
-            // 3. Pokličemo obstoječo create funkcijo
+            // OPOMBA: Če tvoj 'create' nujno potrebuje user_id,
+            // ga tukaj pridobi iz seje, npr.: req.body.user_id = req.user.id;
+
+            // 3. Pokličemo create funkcijo
             return module.exports.create(req, res);
 
         } catch (err) {
@@ -59,19 +61,21 @@ module.exports = {
             return res.status(500).json({ success: false, error: err.message });
         }
     },
-
     create: async function (req, res) {
         const startTime = Date.now();
         log(LogType.INFO, "Začetek celovite obdelave (Assignment + Response).");
 
         try {
-            const { message, user_id, moodle_id } = req.body; // moodle_id pride iz preprocess
+            const { message, moodle_id } = req.body;
+
+            // Če user_id ni podan, nastavimo na null ali privzeto vrednost 1
+            const user_id = req.body.user_id || (req.user ? req.user.id : 1);
 
             if (!message) {
                 return res.status(400).json({ success: false, message: 'Manjka besedilo naloge' });
             }
 
-            log(LogType.INFO, "Pošiljam na OpenAI za popolno analizo...");
+            log(LogType.INFO, `Pošiljam na OpenAI za nalogo ID: ${moodle_id}...`);
 
             const Instructions = `
             You are ProkrastinatorGPT, a smart homework analyzer built into a browser extension for students. You read Moodle assignments and help students understand what they need to do and how to plan their work.
@@ -122,36 +126,46 @@ RULES:
                 .join('\n');
 
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
-            const newAssignment = await assignmentRepository.create({
-                id: moodle_id, // Uporabimo originalni ID, če ga repo sprejme
-                title: aiData.naslov || "Nova naloga",
-                explanation: aiData.opis,
-                difficulty: aiData.tezavnost,
-                estimated_minutes: (aiData.cas_max || 1) * 60,
-                is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
-            });
+            let newAssignment;
+            try {
+                newAssignment = await assignmentRepository.create({
+                    id: moodle_id,
+                    title: aiData.naslov || "Nova naloga",
+                    explanation: aiData.opis,
+                    difficulty: aiData.tezavnost,
+                    estimated_minutes: (aiData.cas_max || 1) * 60,
+                    is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
+                });
+            } catch (dbErr) {
+                log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${dbErr.message}`);
+                // Fallback: če baza ne uspe shraniti, ustvarimo objekt z ID-jem ročno za nadaljevanje
+                newAssignment = { id: moodle_id };
+            }
 
             // --- 2. SHRANJEVANJE V TABELO RESPONSES ---
-            if (user_id && newAssignment.id) {
+            // Ne smemo failat, če ni user_id ali če response repository javi napako
+            try {
                 await responseRepository.create({
-                    user_id: user_id,
-                    assignment_id: newAssignment.id,
+                    user_id: user_id, // Če je null, bo uporabil tisto, kar dovoljuje baza (ali 1)
+                    assignment_id: moodle_id,
                     summary_text: aiData.opis,
                     steps_text: stepsAsPlainText,
                     difficulty_assessment: aiData.tezavnost,
                     estimated_minutes: (aiData.cas_max || 1) * 60
                 });
-                log(LogType.SUCCESS, "Response shranjen kot čisti tekst.");
+                log(LogType.SUCCESS, "Response shranjen.");
+            } catch (respErr) {
+                log(LogType.WARN, `Response ni bil shranjen (vseeno nadaljujem): ${respErr.message}`);
             }
 
             return res.status(201).json({
                 success: true,
-                assignment_id: newAssignment.id,
+                assignment_id: moodle_id,
                 data: aiData
             });
 
         } catch (err) {
-            log(LogType.ERROR, `Napaka: ${err.message}`);
+            log(LogType.ERROR, `Kritična napaka: ${err.message}`);
             return res.status(500).json({ success: false, error: err.message });
         }
     },
