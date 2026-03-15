@@ -25,9 +25,23 @@ module.exports = {
     /**
      * userController.show()
      */
-    show: function (req, res) {
-        log(LogType.INFO, "Klicana neimplementirana metoda show (uporabnik).");
-        //TO DO
+    show: async function (req, res) {
+        const id = req.params.id;
+        log(LogType.INFO, `Pridobivanje podatkov za uporabnika z ID: ${id}`);
+
+        try {
+            const user = await UserModel.getById(id);
+            if (!user) {
+                log(LogType.WARN, `Uporabnik z ID ${id} ne obstaja.`);
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            // Odstranimo geslo pred pošiljanjem
+            return res.json(user);
+        } catch (err) {
+            log(LogType.ERROR, `Napaka pri show metodi: ${err.message}`);
+            return res.status(500).json({ error: err.message });
+        }
     },
 
     /**
@@ -162,37 +176,47 @@ module.exports = {
     },
 
     login: async function (req, res) {
-        const { email, password } = req.body;
-        try {
-            const user = await UserModel.getByEmail(email);
-            if (!user) return res.status(401).json({ message: 'Napačni podatki' });
+    const { email, password } = req.body;
+    try {
+        const user = await UserModel.getByEmail(email);
+        if (!user) return res.status(401).json({ message: 'Napačni podatki' });
 
-            const isMatch = await bcrypt.compare(password, user.password_hash);
-            if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
-            
-            const payload = {id: user.id, email: user.email };
-            // Generate the token
-            const token = jwt.sign(
-                payload ,                        // Data inside the token
-                process.env.JWT_SECRET,             // Secret key
-                { expiresIn: '1d' }                 // Expiration time
-            );
-
-            return res.json({ token, user: payload });
-            
-        } catch (err) {
-            return res.status(500).json({ error: err.message });
-        } 
-    },
-    checkToken: function (req, res) {
-        log(LogType.INFO, `Preverjanje veljavnosti žetona za uporabnika z ID: ${req.userData.id}`);
+        const isMatch = await bcrypt.compare(password, user.password_hash);
+        if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
         
-        // Responds that token is still valid
-        return res.status(200).json({ 
-            valid: true, 
-            message: "Žeton je še vedno veljaven.",
-            userId: req.userData.id 
-        });
+        const payload = {id: user.id, email: user.email };
+        // Generate the token
+        const token = jwt.sign(
+            payload ,                        // Data inside the token
+            process.env.JWT_SECRET,             // Secret key
+            { expiresIn: '1d' }                 // Expiration time
+        );
+
+        return res.json({ token, user: payload });
+        
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    } 
+    },
+    
+    profile: async function(req, res) {
+        log(LogType.INFO, `Dostop do profila za prijavljenega uporabnika (ID: ${req.userData.id}).`);
+
+        try {
+            // ID dobimo direktno iz req.userData, ki ga je nastavil auth middleware
+            const user = await UserModel.getById(req.userData.id);
+            
+            if (!user) {
+                log(LogType.WARN, "Uporabnik iz žetona ne obstaja več v bazi.");
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const { password_hash, ...safeUser } = user;
+            return res.json(safeUser);
+        } catch (err) {
+            log(LogType.ERROR, `Napaka pri dostopu do profila: ${err.message}`);
+            return res.status(500).json({ error: err.message });
+        }
     },
 
     profile: function(req, res,next){
@@ -204,5 +228,4 @@ module.exports = {
         log(LogType.INFO, "Odjava uporabnika.");
         //TO DO
     }
-    
 };
