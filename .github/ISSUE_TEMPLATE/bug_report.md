@@ -1,38 +1,38 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+ime: Prijava napake
+namen: Ustvarite poročilo, ki nam bo pomagalo pri izboljšavah
+naslov: ''
+oznake: ''
+zadolženi: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Opis napake**
+Jasno in jedrnato opiši, za kakšno napako gre.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**Postopek za poustvaritev napake**
+Koraki, s katerimi pride do napake:
+1. Pojdi na '...'
+2. Klikni na '....'
+3. Pomakni se navzdol do '....'
+4. Pojavi se napaka
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Pričakovano delovanje**
+Jasno in jedrnato opiši, kaj bi se po tvojem mnenju moralo zgoditi.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Posnetki zaslona**
+Če je mogoče, dodaj posnetke zaslona, ki bodo v pomoč pri razumevanju težave.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Namizni računalnik (prosimo, izpolni naslednje podatke):**
+ - OS: [npr. Windows, MacOS]
+ - Brskalnik: [npr. chrome, safari]
+ - Različica [npr. 22]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+**Pametni telefon (prosimo, izpolni naslednje podatke):**
+ - Naprava: [npr. iPhone6]
+ - OS: [npr. iOS8.1]
+ - Brskalnik [npr. stock browser, safari]
+ - Različica [npr. 22]
 
-**Additional context**
-Add any other context about the problem here.
+**Dodatni kontekst**
+Tukaj dodaj poljubne druge informacije o težavi.
