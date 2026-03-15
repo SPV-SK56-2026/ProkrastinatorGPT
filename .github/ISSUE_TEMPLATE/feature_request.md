@@ -2,7 +2,7 @@
 name: Predlog nove funkcije
 about: Predlagajte idejo za ta projekt
 title: ''
-labels: 'enhancement'
+labels: ''
 assignees: ''
 
 ---
