@@ -5,6 +5,7 @@ const BaseRepository = require('./BaseRepository');
 
 const TABLE = 'assignments';
 const ALLOWED_COLUMNS = [
+    'id',
   'title',
   'explanation',
   'difficulty',

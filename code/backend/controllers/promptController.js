@@ -104,6 +104,7 @@ RULES:
 - "poudarek": EXACT substring of its "besedilo" — the most meaningful phrase (action + object), e.g. "Zbrati informacije" or "Oddati diagram in log chata". Not just a single verb.
 - "tezavnost": 1-10 integer, based on time needed to complete (1 < 30min, 5 = ~4/5h, 10 = semester-long project (weeks of work)). Tasks requiring physical infrastructure (SSH, network config, multiple machines) = minimum 6.
 - "cas_min/cas_max": realistic hours (research + doing + reviewing). cas_max - cas_min must not exceed 6 (For semester long projects must not exceed 20).
+- "motivacija": only if this is a group assignment — add EXACTLY 3 DISTINCT, humorous and sharp insults in Slovenian for a "nerdy" student who started way too early (long before the deadline). The insults should tease them for being too diligent or having no life. Severity matches tezavnost: 1-3 = light teasing, 4-6 = harsh, 7+ = brutal (nerd-shaming). Omit this field entirely for individual assignments.
 `;
 
             const completion = await openai.chat.completions.create({
@@ -122,15 +123,19 @@ RULES:
                 .map((k, index) => `${index + 1}. ${k.besedilo}`)
                 .join('\n');
 
+            const isGroup = aiData.motivacija ? true : message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi');
+
+
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
             try {
+                log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${assignment_id}`);
                 await assignmentRepository.create({
                     id: assignment_id, // Uporabimo ID, ki ga je preprocess prejel iz req.body.id
                     title: aiData.naslov || "Nova naloga",
                     explanation: aiData.opis,
                     difficulty: aiData.tezavnost,
                     estimated_minutes: (aiData.cas_max || 1) * 60,
-                    is_group_project: message.toLowerCase().includes('skupin') || message.toLowerCase().includes('ekipi')
+                    is_group_project: isGroup
                 });
                 log(LogType.SUCCESS, "Assignment shranjen.");
             } catch (dbErr) {
@@ -140,6 +145,7 @@ RULES:
 
             // --- 2. SHRANJEVANJE V TABELO RESPONSES ---
             try {
+
                 await responseRepository.create({
                     user_id: user_id,
                     assignment_id: assignment_id, // Isti ID kot zgoraj, da zadostimo FK pogoju
