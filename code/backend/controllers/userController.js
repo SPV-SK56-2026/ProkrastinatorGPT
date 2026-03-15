@@ -224,6 +224,17 @@ module.exports = {
         //TO DO
     },
 
+    checkToken: function (req, res) {
+        log(LogType.INFO, `Preverjanje veljavnosti žetona za uporabnika z ID: ${req.userData.id}`);
+
+        // Responds that token is still valid
+        return res.status(200).json({
+            valid: true,
+            message: "Žeton je še vedno veljaven.",
+            userId: req.userData.id
+        });
+    },
+
     logout: function(req, res, next){
         log(LogType.INFO, "Odjava uporabnika.");
         //TO DO
