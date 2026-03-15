@@ -18,6 +18,17 @@ function Register({ setPage }: Props) {
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
 
+  const isPasswordValid = (pwd: string) => {
+    return (
+      pwd.length >= 8 &&
+      /[A-Z]/.test(pwd) &&
+      /[0-9]/.test(pwd) &&
+      /[.,?!#%=@]/.test(pwd)
+    );
+  };
+
+  const isFormValid = email.trim() !== '' && isPasswordValid(password);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -48,9 +59,26 @@ function Register({ setPage }: Props) {
       <div className='formContainer'>
         <form onSubmit={handleRegister}>
           <FormInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <FormInput label="Geslo" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <FormInput 
+          label="Geslo"
+          type="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          style={password && !isPasswordValid(password) ? { border: '2px solid red', color: 'red' } : {}}
+          />
+          {password && !isPasswordValid(password) && (
+            <div style={{ color: 'red', fontSize: '0.8rem', margin: '4px 0 8px 0' }}>
+              <strong>Geslo ni veljavno:</strong>
+              <ul style={{ paddingLeft: '1.2rem', margin: '4px 0' }}>
+                {password.length < 8 && <li>Vsaj 8 znakov</li>}
+                {!/[A-Z]/.test(password) && <li>Vsaj ena velika črka</li>}
+                {!/[0-9]/.test(password) && <li>Vsaj ena številka</li>}
+                {!/[.,?!#%=@]/.test(password) && <li>Vsaj en poseben znak (. , ? ! # % =)</li>}
+              </ul>
+            </div>
+          )}
           <div className="registerContainer">
-            <PrimaryButton disabled={loading}>
+            <PrimaryButton disabled={loading || !isFormValid}>
               {loading ? 'Ustvarjanje...' : 'Registracija'}
             </PrimaryButton>
             <a href='#' className='linkToLogin' onClick={() => setPage?.("login")}>
