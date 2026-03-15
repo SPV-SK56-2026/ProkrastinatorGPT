@@ -1,9 +1,9 @@
 ---
-ime: Prijava napake
-namen: Ustvarite poročilo, ki nam bo pomagalo pri izboljšavah
-naslov: ''
-oznake: ''
-zadolženi: ''
+name: Prijava napake
+about: Ustvarite poročilo, ki nam bo pomagalo pri izboljšavah
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
