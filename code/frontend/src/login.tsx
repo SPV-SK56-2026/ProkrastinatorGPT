@@ -4,6 +4,7 @@ import LayoutWrapper from './components/LayoutWrapper'
 import PageHeader from './components/PageHeader'
 import FormInput from './components/FormInput'
 import PrimaryButton from './components/PrimaryButton'
+import { useIcon } from './useTheme';
 
 interface Props {
   setPage?: (page: string) => void;
@@ -13,27 +14,25 @@ function Login({ setPage }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const icon = useIcon();
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const response = await fetch('https://www.goprokrastinator.org/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         setPage?.("home");
-      }else {
+      } else {
         alert('Napaka pri prijavi. Preveri podatke.');
       }
     } catch (error) {
@@ -46,25 +45,11 @@ function Login({ setPage }: Props) {
 
   return (
     <LayoutWrapper isNoAssignment={!!noAssignment} setPage={setPage}>
-      <PageHeader 
-        title="Prijava" 
-        iconSrc="icons/login.png" 
-        iconId="registerIcon" 
-      />
+      <PageHeader title="Prijava" iconSrc={icon("login")} iconId="registerIcon" />
       <div className='formContainer'>
         <form onSubmit={handleLogin}>
-          <FormInput 
-            label="Email" 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <FormInput 
-            label="Geslo" 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <FormInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <FormInput label="Geslo" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <div className="registerContainer">
             <PrimaryButton disabled={loading}>
               {loading ? 'Prijavljanje...' : 'Prijava'}
@@ -83,5 +68,4 @@ function Login({ setPage }: Props) {
     </LayoutWrapper>
   )
 }
-
 export default Login

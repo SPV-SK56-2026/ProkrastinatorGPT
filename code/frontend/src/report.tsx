@@ -3,6 +3,7 @@ import './App.css'
 import LayoutWrapper from './components/LayoutWrapper'
 import PageHeader from './components/PageHeader'
 import PrimaryButton from './components/PrimaryButton'
+import { useIcon } from './useTheme';
 
 interface Props {
   setPage?: (page: string) => void;
@@ -10,14 +11,11 @@ interface Props {
 
 function Report({ setPage }: Props) {
   const [report, setReport] = useState('')
+  const icon = useIcon();
 
   return (
     <LayoutWrapper setPage={setPage}>
-      <PageHeader 
-        title="Prijavi napako" 
-        iconSrc="icons/bug.png" 
-        iconId="bugIcon" 
-      />
+      <PageHeader title="Prijavi napako" iconSrc={icon("bug")} iconId="bugIcon" />
       <div className="inputContainer">
         <label className="label">Opis napake</label>
         <textarea
@@ -33,5 +31,4 @@ function Report({ setPage }: Props) {
     </LayoutWrapper>
   )
 }
-
 export default Report

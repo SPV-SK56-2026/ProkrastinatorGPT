@@ -8,6 +8,7 @@ import ChangePassword from './changePassword.tsx'
 import Profile from './profile.tsx'
 import LayoutWrapper from './components/LayoutWrapper.tsx'
 import { useApp } from './AppContext.tsx'
+import { useIcon } from './useTheme'
 
 const observer = new ResizeObserver(() => {
   window.parent.postMessage({ 
@@ -20,6 +21,7 @@ observer.observe(document.body);
 function Index() {
   const { currentAssignment, isLoading, error } = useApp();
   const [page, setPage] = useState("home");
+  const icon = useIcon();
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
 
@@ -28,7 +30,6 @@ function Index() {
       <div className="throbber" />
     </div>
   );
-
 
   if (page === "report") return <Report setPage={setPage} />;
   if (page === "register") return <Register setPage={setPage} />;
@@ -43,36 +44,32 @@ function Index() {
         className="holder description" 
         dangerouslySetInnerHTML={{ __html: currentAssignment?.description || '' }}
       />
-
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
             <ul>
               {currentAssignment?.steps.map((step) => (
-              <li key={step.id}>
-                <span dangerouslySetInnerHTML={{ __html: step.description }} />
-              </li>
-            ))}
+                <li key={step.id}>
+                  <span dangerouslySetInnerHTML={{ __html: step.description }} />
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
-
       <hr />
-
       <div className="bottomHolder">
         <div className="infoBlock">
           <div className="infoTitle">
-            <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
+            <img src={icon("barbell")} className="barbellIcon" alt="barbell" />
             <span>Težavnost</span>
           </div>
           <div className="infoValue">{currentAssignment?.difficulty}</div>
         </div>
-
         <div className="infoBlock">
           <div className="infoTitle">
-            <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
+            <img src={icon("wall-clock")} className="clockIcon" alt="clock" />
             <span>Predviden čas</span>
           </div>
           <div className="infoValue">{currentAssignment?.estimatedTime}</div>
@@ -81,5 +78,4 @@ function Index() {
     </LayoutWrapper>
   )
 }
-
 export default Index

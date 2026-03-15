@@ -1,0 +1,116 @@
+[data-theme="dark"] {
+
+body, #root {
+    background-color: #0A0A0A;
+    color: #F5F5F5;
+}
+
+
+hr {
+    color: #F5F5F580;
+    background-color: #F5F5F580;
+    opacity: 50%;
+}
+
+
+.orangeText {
+color: #D66328;
+}
+
+.blueText {
+color: #7C5CFF;
+}
+
+.blueTitle {
+color: #7C5CFF;
+}
+
+.subText {
+color: #9a9a9a;
+}
+
+
+.cardContainer {
+background: #2D333A;
+box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+#blueHolder {
+background-color: #7C5CFF;
+box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+#blueTextHolder {
+background-color: #2d333a;
+}
+
+.optionsDropdown {
+background: #2d333a;
+box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.45);
+}
+
+
+.textInput {
+background: #2D333A;
+color: #e8e6e3;
+box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.registerInput {
+background:#2D333A;
+color: #e8e6e3;
+box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.btnClose {
+background-color: #7C5CFF;
+box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btnSubmit {
+background-color: #D66328;
+box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4);
+}
+
+
+li, li::marker {
+color: #e8e6e3;
+}
+
+
+.label, .registerLabel {
+color: #9a9a9a;
+}
+
+
+.infoTitle, .infoValue {
+color: #c8c4c0;
+}
+
+.barbellIcon, .clockIcon, .optionItem, .optionsIcons {
+color: #c8c4c0;
+}
+
+.linkToLogin, .linkToLogin:focus,
+.linkToRegister, .linkToRegister:focus,
+.linkToPassChange, .linkToPassChange:focus {
+color: #9b92e0;
+}
+
+
+#optionIcon {
+color: #c8c4c0;
+}
+
+
+.throbber {
+border-color: rgba(255, 255, 255, 0.1);
+border-top-color: #D66328;
+}
+
+
+.inputIcon {
+opacity: 0.5;
+filter: invert(1);
+}
+}
