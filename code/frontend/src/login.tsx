@@ -19,6 +19,7 @@ function Login({ setPage, setUser }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,10 +42,13 @@ function Login({ setPage, setUser }: Props) {
         
         if (setUser) setUser(data.user);
         
-        alert(`Živjo ${data.user.name || email}! Uspešno si se prijavil.`);
-        
-        setPage?.("home");
-        window.location.reload();
+        setLoginSuccess(true);
+
+        setTimeout(() => {
+          setPage?.("home");
+          window.location.reload();
+        }, 2000);
+
       } else {
         alert('Napačni podatki za prijavo.');
       }
@@ -55,6 +59,18 @@ function Login({ setPage, setUser }: Props) {
       setLoading(false);
     }
   };
+
+  if (loginSuccess) {
+    return (
+      <div className="successOverlay">
+        <div className="successContent">
+          <img src="icons/check.png" alt="Success" className="successIcon" />
+          <h2>Uspešna prijava!</h2>
+          <p>Preusmerjanje na glavno stran...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
