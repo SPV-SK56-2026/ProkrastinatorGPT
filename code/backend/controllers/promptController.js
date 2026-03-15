@@ -81,6 +81,7 @@ Return ONLY valid JSON. No markdown fences, no explanation.
 
 EXAMPLE OUTPUT:
 {
+  "naslov": "Organizacijski diagram",
   "opis": "Naloga zahteva <b>izdelavo organizacijskega diagrama</b> podjetja, ki prikazuje strukturo in naloge posameznikov ali oddelkov. Priložiti je treba <b>log chata</b>, ki dokazuje, da so vsi člani ekipe <b>sodelovali in oddali isto datoteko</b>.",
   "koraki": [
     { "besedilo": "Zbrati <b>informacije o strukturi podjetja</b> in nalogah oddelkov." },
@@ -97,7 +98,6 @@ EXAMPLE OUTPUT:
 RULES:
 - "naslov": Short 2-4 word title in Slovenian.
 - "opis": 2-4 sentences explaining the real goal. Summarize WHAT must be done, WITH WHAT tools/format, and WHAT must be submitted.
-- "poudarki_opis": highlight EVERYTHING important — what the task requires, how to do it, and what to submit. Each key requirement gets its own highlight. All must be EXACT substrings of "opis".
 - "koraki": 3-7 steps, each starting with an action verb.
 - "poudarek": EXACT substring of its "besedilo" — the most meaningful phrase (action + object), e.g. "Zbrati informacije" or "Oddati diagram in log chata". Not just a single verb.
 - "tezavnost": 1-10 integer, based on time needed to complete (1 < 30min, 5 = ~4/5h, 10 = semester-long project (weeks of work)). Tasks requiring physical infrastructure (SSH, network config, multiple machines) = minimum 6.
@@ -116,6 +116,7 @@ RULES:
 
             const aiData = JSON.parse(completion.choices[0].message.content);
             log(LogType.SUCCESS, "AI uspešno analiziral nalogo.");
+            log(LogType.INFO, `AI data: ${JSON.stringify(aiData, null, 2)}`);
 
             const stepsAsPlainText = aiData.koraki
                 .map((k, index) => `${index + 1}. ${k.besedilo}`)
