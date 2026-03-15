@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import './darkTheme.css'
 import Options from './options'
 
 interface HeaderProps {

@@ -7,6 +7,7 @@ interface FormInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const FormInput: React.FC<FormInputProps> = ({ 
@@ -15,7 +16,8 @@ const FormInput: React.FC<FormInputProps> = ({
   value, 
   onChange, 
   placeholder,
-  className = 'registerInput' 
+  className = 'registerInput' ,
+  style
 }) => {
   return (
     <div className="registerContainer">
@@ -26,6 +28,7 @@ const FormInput: React.FC<FormInputProps> = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        style={style}
       />
     </div>
   );

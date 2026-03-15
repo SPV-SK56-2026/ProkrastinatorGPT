@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Header from '../header';
 import CloseButton from './CloseButton';
-
+import Footer from '../footer';
 interface LayoutWrapperProps {
   children: React.ReactNode;
   showCloseButton?: boolean;
@@ -36,6 +36,7 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
           {noAssignmentMessage}
         </div>
         {showCloseButton && <CloseButton />}
+         <Footer/>
       </>
     );
   }
@@ -45,6 +46,7 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
       <Header setPage={setPage} />
       {children}
       {showCloseButton && <CloseButton />}
+       <Footer/>
     </>
   );
 };
