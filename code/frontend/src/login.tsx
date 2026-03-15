@@ -6,14 +6,24 @@ import FormInput from './components/FormInput'
 import PrimaryButton from './components/PrimaryButton'
 import { useIcon } from './useTheme';
 
+const observer = new ResizeObserver(() => {
+  window.parent.postMessage({ 
+    type: "RESIZE_IFRAME", 
+    height: document.body.scrollHeight 
+  }, "*");
+});
+observer.observe(document.body);
+
 interface Props {
   setPage?: (page: string) => void;
+  setUser?: (user: any) => void;
 }
 
-function Login({ setPage }: Props) {
+function Login({ setPage, setUser }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loginSuccess, setLoginSuccess] = useState(false)
   const icon = useIcon();
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
@@ -24,26 +34,50 @@ function Login({ setPage }: Props) {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('https://www.goprokrastinator.org/users/login', {
+      const response = await fetch('https://www.goprokrastinator.org/user/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email, password }),
       });
       if (response.ok) {
         const data = await response.json();
+
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        setPage?.("home");
+
+        if (setUser) setUser(data.user);
+
+        setLoginSuccess(true);
+
+        setTimeout(() => {
+          setPage?.("home");
+          window.location.reload();
+        }, 2000);
+
       } else {
         alert('Napaka pri prijavi. Preveri podatke.');
       }
     } catch (error) {
-      console.error('Napaka na omrežju:', error);
+      console.error(error);
       alert('Strežnik ni dosegljiv.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (loginSuccess) {
+    return (
+      <div className="successOverlay">
+        <div className="successContent">
+          <img src="icons/check.png" alt="Success" className="successIcon" />
+          <h2>Uspešna prijava!</h2>
+          <p>Preusmerjanje na glavno stran...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <LayoutWrapper isNoAssignment={!!noAssignment} setPage={setPage}>
@@ -70,4 +104,5 @@ function Login({ setPage }: Props) {
     </LayoutWrapper>
   )
 }
+
 export default Login
