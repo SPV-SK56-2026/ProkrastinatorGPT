@@ -81,15 +81,13 @@ Return ONLY valid JSON. No markdown fences, no explanation.
 
 EXAMPLE OUTPUT:
 {
-  "naslov": "Izdelava organizacijskega diagrama",
-  "opis": "Naloga zahteva izdelavo organizacijskega diagrama podjetja, ki prikazuje strukturo in naloge posameznikov ali oddelkov. Priložiti je treba log chata, ki dokazuje, da so vsi člani ekipe sodelovali.",
-  "poudarki_opis": ["organizacijskega diagrama", "log chata"],
+  "opis": "Naloga zahteva <b>izdelavo organizacijskega diagrama</b> podjetja, ki prikazuje strukturo in naloge posameznikov ali oddelkov. Priložiti je treba <b>log chata</b>, ki dokazuje, da so vsi člani ekipe <b>sodelovali in oddali isto datoteko</b>.",
   "koraki": [
-    { "besedilo": "Zbrati informacije o strukturi podjetja in nalogah oddelkov.", "poudarek": "informacije o strukturi podjetja" },
-    { "besedilo": "Izdelati organizacijski diagram s hierarhijo in odgovornostmi.", "poudarek": "organizacijski diagram" },
-    { "besedilo": "Sodelovati v ekipi in se dogovoriti o vsebini diagrama.", "poudarek": "Sodelovati v ekipi" },
-    { "besedilo": "Zabeležiti log chata kot dokaz aktivnega sodelovanja.", "poudarek": "log chata" },
-    { "besedilo": "Oddati diagram in log chata v skupni datoteki.", "poudarek": "skupni datoteki" }
+    { "besedilo": "Zbrati <b>informacije o strukturi podjetja</b> in nalogah oddelkov." },
+    { "besedilo": "Izdelati <b>organizacijski diagram</b> s hierarhijo in odgovornostmi." },
+    { "besedilo": "Uskladiti vsebino z <b>vsemi člani ekipe</b>." },
+    { "besedilo": "Posneti <b>log chata</b> kot dokaz sodelovanja." },
+    { "besedilo": "Oddati <b>diagram in log chata</b> v skupni datoteki." }
   ],
   "tezavnost": 4,
   "cas_min": 2,
