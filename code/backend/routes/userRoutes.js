@@ -9,6 +9,7 @@ router.get('/profile', auth, userController.profile);
 router.get('/logout', userController.logout);
 router.get('/list', userController.list);
 router.get('/:id', userController.show);
+router.get('/check', auth, userController.checkToken);
 
 
 router.post('/', userController.create);

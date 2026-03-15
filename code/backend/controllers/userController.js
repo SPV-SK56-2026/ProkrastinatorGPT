@@ -162,28 +162,38 @@ module.exports = {
     },
 
     login: async function (req, res) {
-    const { email, password } = req.body;
-    try {
-        const user = await UserModel.getByEmail(email);
-        if (!user) return res.status(401).json({ message: 'Napačni podatki' });
+        const { email, password } = req.body;
+        try {
+            const user = await UserModel.getByEmail(email);
+            if (!user) return res.status(401).json({ message: 'Napačni podatki' });
 
-        const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
-        
-        const payload = {id: user.id, email: user.email };
-        // Generate the token
-        const token = jwt.sign(
-            payload ,                        // Data inside the token
-            process.env.JWT_SECRET,             // Secret key
-            { expiresIn: '1d' }                 // Expiration time
-        );
+            const isMatch = await bcrypt.compare(password, user.password_hash);
+            if (!isMatch) return res.status(401).json({ message: 'Napačni podatki' });
+            
+            const payload = {id: user.id, email: user.email };
+            // Generate the token
+            const token = jwt.sign(
+                payload ,                        // Data inside the token
+                process.env.JWT_SECRET,             // Secret key
+                { expiresIn: '1d' }                 // Expiration time
+            );
 
-        return res.json({ token, user: payload });
+            return res.json({ token, user: payload });
+            
+        } catch (err) {
+            return res.status(500).json({ error: err.message });
+        } 
+    },
+    checkToken: function (req, res) {
+        log(LogType.INFO, `Preverjanje veljavnosti žetona za uporabnika z ID: ${req.userData.id}`);
         
-    } catch (err) {
-        return res.status(500).json({ error: err.message });
-    } 
-},
+        // Responds that token is still valid
+        return res.status(200).json({ 
+            valid: true, 
+            message: "Žeton je še vedno veljaven.",
+            userId: req.userData.id 
+        });
+    },
 
     profile: function(req, res,next){
         log(LogType.INFO, "Dostop do profila uporabnika.");
@@ -194,4 +204,5 @@ module.exports = {
         log(LogType.INFO, "Odjava uporabnika.");
         //TO DO
     }
+    
 };
