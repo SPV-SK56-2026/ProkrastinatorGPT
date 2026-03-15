@@ -13,6 +13,8 @@ function Report({ setPage }: Props) {
   const [report, setReport] = useState('')
   const icon = useIcon();
 
+  const isFormValid = report.trim() !== '';
+
   return (
     <LayoutWrapper setPage={setPage}>
       <PageHeader title="Prijavi napako" iconSrc={icon("bug")} iconId="bugIcon" />
@@ -25,7 +27,10 @@ function Report({ setPage }: Props) {
           onChange={(e) => setReport(e.target.value)}
         />
       </div>
-      <PrimaryButton onClick={() => console.log('Report submitted:', report)}>
+      <PrimaryButton 
+        onClick={() => console.log('Report submitted:', report)}
+        disabled={!isFormValid}
+        >
         Prijava
       </PrimaryButton>
     </LayoutWrapper>

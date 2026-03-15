@@ -18,6 +18,8 @@ function Login({ setPage }: Props) {
   const params = new URLSearchParams(window.location.search);
   const noAssignment = params.get("noAssignment");
 
+  const isFormValid = email.trim() !== '' && password.trim() !== '';
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -51,7 +53,7 @@ function Login({ setPage }: Props) {
           <FormInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <FormInput label="Geslo" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <div className="registerContainer">
-            <PrimaryButton disabled={loading}>
+            <PrimaryButton disabled={loading || !isFormValid}>
               {loading ? 'Prijavljanje...' : 'Prijava'}
             </PrimaryButton>
             <div className="linksContainer">
