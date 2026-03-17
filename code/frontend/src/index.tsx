@@ -1,69 +1,81 @@
-//import { useState } from 'react'
+import { useState } from 'react'
 import './App.css'
+import Report from './report'
+import Register from './register'
+import Login from './login.tsx'
+import ForgotPassword from './forgotPassword.tsx'
+import ChangePassword from './changePassword.tsx'
+import Profile from './profile.tsx'
+import LayoutWrapper from './components/LayoutWrapper.tsx'
+import { useApp } from './AppContext.tsx'
+import { useIcon } from './useTheme'
 
-function Index(){
+const observer = new ResizeObserver(() => {
+  window.parent.postMessage({ 
+    type: "RESIZE_IFRAME", 
+    height: document.body.scrollHeight 
+  }, "*");
+});
+observer.observe(document.body);
+
+function Index() {
+  const { currentAssignment, isLoading, error } = useApp();
+  const [page, setPage] = useState("home");
+  const icon = useIcon();
+  const params = new URLSearchParams(window.location.search);
+  const noAssignment = params.get("noAssignment");
+
+  if (isLoading) return (
+    <div className="loaderWrapper">
+      <div className="throbber" />
+    </div>
+  );
+
+  if (page === "report") return <Report setPage={setPage} />;
+  if (page === "register") return <Register setPage={setPage} />;
+  if (error === "login" || page === "login") return <Login setPage={setPage} />;
+  if (page === "forgot") return <ForgotPassword setPage={setPage} />;
+  if (page === "change") return <ChangePassword setPage={setPage} />;
+  if (page === "profile") return <Profile setPage={setPage} />;
+
   return (
-    <>
-      <div>
-        <div id="titleContainer">
-          <img src="icons/icon.png" id="titleIcon" alt="icon" />
-          <span id="title">ProkrastinatorGPT</span>
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="holder description">
-        Naloga zahteva izdelavo <span className="orangeText">organizacijskega diagrama podjeta</span>, ki prikazuje strukturo in naloge posameznikov ali oddelkov. <span className="orangeText">Priložiti je treba log chata</span>, ki dokazuje, da so vsi člani ekipe sodelovali in oddali isto datoteko.
-      </div>
-
+    <LayoutWrapper isNoAssignment={!!noAssignment || !currentAssignment} setPage={setPage}>
+      <div 
+        className="holder description" 
+        dangerouslySetInnerHTML={{ __html: currentAssignment?.description || '' }}
+      />
       <div className="holder">
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
             <ul>
-              <li><span className="blueText">Zbrati informacije</span> o strukturi podjeta in nalogah posameznikov/oddelkov.</li>
-              <li><span className="blueText">Izdelati organizacijskih diagram</span>, ki prikazuje hierarhijo in odgovornosti.</li>
-              <li><span className="blueText">Sodelovati v ekipi</span> in se dogovoriti o vsebini ter oblikovanju diagrama.</li>
-              <li><span className="blueText">Zabeležiti log chata</span> kot dokaz aktivnega sodelovanja vseh članov.</li>
-              <li><span className="blueText">Oddati diagram in log chata v skupni datoteki.</span></li>
+              {currentAssignment?.steps.map((step) => (
+                <li key={step.id}>
+                  <span dangerouslySetInnerHTML={{ __html: step.description }} />
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
-
       <hr />
-
-      <div>
-        <div className="bottomHolder">
-          <div className="infoBlock">
-            <div className="infoTitle">
-              <img src="icons/barbell.png" className="barbellIcon" alt="barbell" />
-              <span>Težavnost</span>
-            </div>
-            <div className="infoValue">4/10</div>
+      <div className="bottomHolder">
+        <div className="infoBlock">
+          <div className="infoTitle">
+            <img src={icon("barbell")} className="barbellIcon" alt="barbell" />
+            <span>Težavnost</span>
           </div>
-
-          <div className="infoBlock">
-            <div className="infoTitle">
-              <img src="icons/wall-clock.png" className="clockIcon" alt="clock" />
-              <span>Predviden čas</span>
-            </div>
-            <div className="infoValue">2-3 ure</div>
-          </div>
+          <div className="infoValue">{currentAssignment?.difficulty}</div>
         </div>
-
-        <div className="btnWrapper">
-          <button
-            className="btnClose"
-            onClick={(): void => window.close()}
-          >
-            Zapri
-          </button>
+        <div className="infoBlock">
+          <div className="infoTitle">
+            <img src={icon("wall-clock")} className="clockIcon" alt="clock" />
+            <span>Predviden čas</span>
+          </div>
+          <div className="infoValue">{currentAssignment?.estimatedTime}</div>
         </div>
       </div>
-    </>
+    </LayoutWrapper>
   )
 }
-
 export default Index
