@@ -7,6 +7,8 @@ router.get('/', (req, res) => {
     res.json({ message: "ProkrastinatorGPT API Bug Rotes deluje!", status: "online" });
 });
 
+router.get('/list', bugController.list);
+
 router.get('/:id', bugController.show);
 
 router.post('/', bugController.create);
