@@ -15,6 +15,11 @@ function Options({ setPage }: OptionsProps) {
           <p className='optionInfo'>Moj profil</p>
         </li>
         <hr />
+        <li className='optionItem' onClick={() => setPage("tasks")} style={{ cursor: "pointer" }}>
+          <img src={icon("wall-clock")} className="optionsIcons" alt="icon" />
+          <p className='optionInfo'>Seznam nalog</p>
+        </li>
+        <hr />
         <li className='optionItem' onClick={() => setPage("report")} style={{ cursor: "pointer" }}>
           <img src={icon("bug")} className="optionsIcons" alt="icon" />
           <p className='optionInfo'>Prijavi napako</p>
