@@ -1,21 +1,27 @@
 let iframe = null;
 
 function createIndex(id) {
-  console.log(id);
+
+  const description = encodeURIComponent(document.querySelector('.activity-description')?.innerText?.trim() || '');
+  const timeRemaining = encodeURIComponent(document.querySelector('.timeremaining.cell.c1.lastcol')?.innerText?.trim() || '');
+
   iframe = document.createElement("iframe");
-  iframe.src = chrome.runtime.getURL("index.html");
+  iframe.src = chrome.runtime.getURL("index.html") 
+    + `?assignmentId=${encodeURIComponent(id)}`
+    + `&description=${description}`
+    + `&timeRemaining=${timeRemaining}`;
+
   iframe.style.cssText = `
     position: fixed;
     top: 20px;
     right: 20px;
-    height: 0px;
+    height: 150px;
     max-height: 90vh;
     border: none;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     z-index: 999999;
-    width:30%;
-   
+    width: 30%;
   `;
   document.body.appendChild(iframe);
 }
@@ -48,13 +54,11 @@ if (params.get("id")) {
 
 
 chrome.runtime.onMessage.addListener((message) => {
-  console.log(id);
   if (message.type === "TOGGLE_IFRAME") {
     if (iframe) {
       iframe.remove();
       iframe = null;
     } else {
-      console.log(id);
       if(id == "" || id == null)
         createIframe()
       else

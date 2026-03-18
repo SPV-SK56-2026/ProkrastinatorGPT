@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ProkrastinatorGPT — Tester</title>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    padding: 32px 16px;
+  }
+
+  h1 { font-size: 22px; color: #1a1a2e; margin-bottom: 4px; }
+  h1 span { color: #e8590c; }
+  .subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .full { grid-column: 1 / -1; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    resize: vertical;
+    background: white;
+    line-height: 1.5;
+  }
+
+  textarea:focus { outline: none; border-color: #e8590c; }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #e8590c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button:hover { background: #c94a08; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+
+  .panel {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid #eee;
+  }
+
+  .panel h3 {
+    font-size: 13px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  #raw {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  /* OPIS — oranžni poudarki */
+  .preview-opis {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+  }
+  .opis-highlight { color: #e8590c; font-weight: bold; }
+
+  /* KORAKI — modri poudarki */
+  .preview-koraki { margin-bottom: 16px; }
+  .preview-koraki h4 {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .korak {
+    padding: 6px 10px;
+    margin-bottom: 6px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+  }
+  .korak-highlight { color: #3b82f6; font-weight: bold; }
+
+  .preview-meta { display: flex; gap: 16px; }
+
+  .meta-box {
+    flex: 1;
+    background: #fff4ee;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .meta-box .meta-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .meta-box .meta-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e8590c;
+  }
+
+  .error {
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    color: #cc0000;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .loading {
+    color: #888;
+    font-size: 13px;
+    font-style: italic;
+    padding: 12px 0;
+  }
+
+  .version-btns { display: flex; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+
+  .version-btn {
+    padding: 4px 12px;
+    border: 1px solid #e8590c;
+    background: white;
+    color: #e8590c;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    width: auto;
+    font-weight: normal;
+  }
+  .version-btn:hover { background: #fff4ee; }
+
+  .token-bar {
+    grid-column: 1 / -1;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 20px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .token-bar .stat { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .token-bar .stat-val { font-weight: bold; font-size: 17px; color: #1a1a2e; }
+  .token-bar .stat-lbl { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.4px; }
+  .token-bar .divider { width: 1px; height: 28px; background: #eee; }
+  .token-bar .cost-val { font-weight: bold; font-size: 17px; color: #e8590c; }
+  .token-bar .placeholder { color: #bbb; font-style: italic; font-size: 13px; }
+</style>
+</head>
+
+<body>
+
+<div style="max-width:860px; margin: 0 auto 20px auto;">
+  <h1>🧠 <span>ProkrastinatorGPT</span> — Prompt Tester</h1>
+  <p class="subtitle">Testiraj različne prompte in primerjaj rezultate</p>
+</div>
+
+<div class="container">
+
+  <div class="full">
+    <div class="version-btns">
+      <button class="version-btn" onclick="loadPrompt('v1')">V1 Osnovna</button>
+      <button class="version-btn" onclick="loadPrompt('v2')">V2 Vloga</button>
+      <button class="version-btn" onclick="loadPrompt('v3')">V3 Few-shot</button>
+      <button class="version-btn" onclick="loadPrompt('v4')">V4 Chain-of-thought</button>
+      <button class="version-btn" onclick="loadPrompt('v5')">V5 Kombiniran</button>
+      <button class="version-btn" onclick="loadPrompt('v6')">V6 Nadgradnja V5</button>
+    </div>
+    <label>System Prompt</label>
+    <textarea id="prompt" rows="12"></textarea>
+  </div>
+
+  <div>
+    <label>Besedilo naloge (iz Moodla)</label>
+    <textarea id="message" rows="8" placeholder="Sem prilepi besedilo naloge iz estudij.si ..."></textarea>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px; justify-content:flex-end;">
+    <button id="sendBtn" onclick="send()">▶ Pošlji</button>
+  </div>
+
+  <div class="panel">
+    <h3>Raw odgovor (JSON)</h3>
+    <div id="raw" class="loading">Čakam na odgovor...</div>
+  </div>
+
+  <div class="panel">
+    <h3>UI Preview</h3>
+    <div id="preview" class="loading">Čakam na odgovor...</div>
+  </div>
+
+  <!-- Token / cost bar -->
+  <div class="token-bar full" id="tokenBar">
+    <span class="placeholder">Statistika bo prikazana po prvem klicu...</span>
+  </div>
+
+</div>
+
+<script>
+
+window.onload = () => loadPrompt('v5')
+
+async function loadPrompt(version) {
+  try {
+    const res = await fetch(`/prompts/${version}.txt`)
+    if (!res.ok) throw new Error("Datoteka ni najdena")
+    const text = await res.text()
+    document.getElementById("prompt").value = text
+  } catch (err) {
+    alert(`Napaka pri nalaganju prompta ${version}: ${err.message}`)
+  }
+}
+
+// Escape HTML
+function highlight(text, phrases, cssClass) {
+  let safe = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+
+  if (!phrases || phrases.length === 0) return safe
+
+  phrases.forEach(phrase => {
+    if (!phrase) return
+    const safePhrase = phrase
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+    const escaped = safePhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    safe = safe.replace(
+      new RegExp(escaped, 'g'),
+      `<span class="${cssClass}">${safePhrase}</span>`
+    )
+  })
+  return safe
+}
+
+function renderPreview(parsed) {
+  if (!parsed) {
+    return `<div class="error">Odgovor ni veljaven JSON. Poglej raw odgovor.</div>`
+  }
+
+  const opisHtml = highlight(parsed.opis || "", parsed.poudarki_opis || [], "opis-highlight")
+
+  const korakiHtml = (parsed.koraki || []).map(k => {
+    const step = highlight(k.besedilo || "", k.poudarek ? [k.poudarek] : [], "korak-highlight")
+    return `<div class="korak">• ${step}</div>`
+  }).join("")
+
+  return `
+    <div class="preview-opis">${opisHtml}</div>
+    <div class="preview-koraki">
+      <h4>Potek reševanja</h4>
+      ${korakiHtml}
+    </div>
+    <div class="preview-meta">
+      <div class="meta-box">
+        <div class="meta-label">⇔ Težavnost</div>
+        <div class="meta-value">${parsed.tezavnost}/10</div>
+      </div>
+      <div class="meta-box">
+        <div class="meta-label">⏱ Predviden čas</div>
+        <div class="meta-value">${parsed.cas_min}–${parsed.cas_max} ur</div>
+      </div>
+    </div>
+    ${parsed.motivacija && parsed.motivacija.length ? `
+    <div style="margin-top:16px;">
+      <h4 style="font-size:12px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">💀 Motivacija</h4>
+      ${parsed.motivacija.map(m => `<div class="korak" style="background:#fff0f0;">😐 ${m}</div>`).join("")}
+    </div>` : ""}
+  `
+}
+
+async function send() {
+  const prompt = document.getElementById("prompt").value.trim()
+  const message = document.getElementById("message").value.trim()
+
+  if (!prompt || !message) {
+    alert("Vnesi prompt in besedilo naloge!")
+    return
+  }
+
+  const btn = document.getElementById("sendBtn")
+  btn.disabled = true
+  btn.textContent = "Pošiljam..."
+
+  document.getElementById("raw").innerHTML = `<span class="loading">Čakam na OpenAI...</span>`
+  document.getElementById("preview").innerHTML = `<span class="loading">Čakam na odgovor...</span>`
+
+  try {
+    const res = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, message })
+    })
+
+    const data = await res.json()
+
+    if (data.error) {
+      document.getElementById("raw").innerHTML = `<div class="error">${data.error}</div>`
+      document.getElementById("preview").innerHTML = `<div class="error">${data.error}</div>`
+      return
+    }
+
+    document.getElementById("raw").textContent = data.reply
+    document.getElementById("preview").innerHTML = renderPreview(data.parsed)
+
+    // stats
+    if (data.usage) {
+      const u = data.usage
+      const cents = (u.cost_usd * 100).toFixed(4)
+      document.getElementById("tokenBar").innerHTML = `
+        <div class="stat">
+          <span class="stat-val">${u.input_tokens}</span>
+          <span class="stat-lbl">Input tokeni</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="stat-val">${u.output_tokens}</span>
+          <span class="stat-lbl">Output tokeni</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="stat-val">${u.total_tokens}</span>
+          <span class="stat-lbl">Skupaj tokeni</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="cost-val">$${u.cost_usd.toFixed(5)}</span>
+          <span class="stat-lbl">Cena (USD)</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="cost-val">${cents}¢</span>
+          <span class="stat-lbl">Cena (centi)</span>
+        </div>
+      `
+    }
+
+  } catch (err) {
+    document.getElementById("raw").innerHTML = `<div class="error">Napaka: ${err.message}</div>`
+    document.getElementById("preview").innerHTML = `<div class="error">Napaka: ${err.message}</div>`
+  } finally {
+    btn.disabled = false
+    btn.textContent = "▶ Pošlji"
+  }
+}
+
+</script>
+</body>
+</html>

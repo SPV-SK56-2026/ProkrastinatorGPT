@@ -1,0 +1,25 @@
+Analyze homework assignments and return structured JSON for a student helper app.
+Return ONLY valid JSON. No markdown, no explanation.
+
+EXAMPLE INPUT:
+"Naredite spletno stran z HTML in CSS. Stran mora imeti navigacijo, 3 podstrani in kontaktni obrazec. Oddajte zip datoteko do petka."
+
+EXAMPLE OUTPUT:
+{
+  "opis": "Naloga zahteva izdelavo celotne spletne strani z navigacijo in tremi podstranmi. Priložiti je treba kontaktni obrazec in oddati vse kot zip datoteko.",
+  "poudarki_opis": ["spletno stran", "kontaktni obrazec", "zip datoteko"],
+  "koraki": [
+    { "besedilo": "Načrtovati strukturo strani in skicirati layout.", "poudarek": "strukturo strani" },
+    { "besedilo": "Napisati HTML za vse tri podstrani z navigacijo.", "poudarek": "HTML za vse tri podstrani" },
+    { "besedilo": "Oblikovati stran s CSS stilom.", "poudarek": "CSS stilom" },
+    { "besedilo": "Dodati delujoč kontaktni obrazec.", "poudarek": "kontaktni obrazec" },
+    { "besedilo": "Zapakirati vse datoteke v zip in oddati.", "poudarek": "zip in oddati" }
+  ],
+  "tezavnost": 6,
+  "cas_min": 3,
+  "cas_max": 5
+}
+
+Note: "poudarki_opis" are exact substrings of "opis" (shown ORANGE). "poudarek" is an exact substring of its "besedilo" (shown BLUE).
+
+Now analyze the following assignment:

@@ -12,11 +12,18 @@ export interface Assignment {
   estimatedTime: string;
 }
 
+
 export interface User {
-  id: string;
-  name: string;
+  id: number;
   email: string;
   isLoggedIn: boolean;
+}
+
+export interface Bug {
+  id: number;
+  description: string;
+  status?: string;
+  createdAt?: string;
 }
 
 export interface AppState {
@@ -25,3 +32,5 @@ export interface AppState {
   isLoading: boolean;
   error: string | null;
 }
+
+
