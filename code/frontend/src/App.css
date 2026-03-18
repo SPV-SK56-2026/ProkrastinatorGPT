@@ -436,6 +436,97 @@ li::marker {
   to { transform: rotate(360deg); }
 }
 
+.taskListContainer {
+  padding: 10px 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.listGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.taskCard {
+  background: var(--holder-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.2s ease;
+}
+
+.taskCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardId {
+  font-size: 12px;
+  font-weight: bold;
+  color: #888;
+}
+
+.cardStatus {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.cardStatus.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.cardStatus.v {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.cardStatus.resolved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: var(--text-color);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cardDate {
+  font-size: 11px;
+  color: #999;
+  align-self: flex-end;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: #888;
+  margin-top: 20px;
+}
+
 .successOverlay {
   display: flex;
   justify-content: center;

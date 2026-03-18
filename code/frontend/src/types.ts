@@ -18,6 +18,14 @@ export interface User {
   email: string;
   isLoggedIn: boolean;
 }
+
+export interface Bug {
+  id: number;
+  description: string;
+  status?: string;
+  createdAt?: string;
+}
+
 export interface AppState {
   currentAssignment: Assignment | null;
   user: User | null;

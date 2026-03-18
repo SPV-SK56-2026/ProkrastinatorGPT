@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Report from './report'
+import TaskList from './TaskList'
 import Register from './register'
 import Login from './login.tsx'
 import ForgotPassword from './forgotPassword.tsx'
@@ -32,6 +33,7 @@ function Index() {
   );
 
   if (page === "report") return <Report setPage={setPage} />;
+  if (page === "tasks") return <TaskList setPage={setPage} />;
   if (page === "register") return <Register setPage={setPage} />;
   if (error === "login" || page === "login") return <Login setPage={setPage} />;
   if (page === "forgot") return <ForgotPassword setPage={setPage} />;
