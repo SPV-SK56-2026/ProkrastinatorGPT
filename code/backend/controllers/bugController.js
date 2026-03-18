@@ -17,7 +17,7 @@ module.exports = {
                 bugs = await BugModel.getAll();
             }
 
-            log(LogType.SUCCESS, `Uspe\u0161no pridobljenih ${bugs.length} napak.`);
+            log(LogType.SUCCESS, `Uspesno pridobljenih ${bugs.length} napak.`);
             res.json(bugs);
         } catch (err) {
             log(LogType.ERROR, `Napaka pri pridobivanju seznama napak: ${err.message}`);
@@ -56,7 +56,7 @@ module.exports = {
                 title,
                 description,
                 status,
-                priority,
+                priority
             });
 
             log(LogType.SUCCESS, `Napaka ustvarjena z ID: ${newBug.id}`);
@@ -87,12 +87,12 @@ module.exports = {
         try {
             const bug = await BugModel.getById(id);
             if (!bug) {
-                log(LogType.WARN, `Posodobitev neuspe\u0161na: Bug z ID ${id} ne obstaja.`);
+                log(LogType.WARN, `Posodobitev neuspesna: Bug z ID ${id} ne obstaja.`);
                 return res.status(404).json({ message: 'Bug not found' });
             }
 
             const updated = await BugModel.update(id, updateData);
-            log(LogType.SUCCESS, `Bug z ID ${id} uspe\u0161no posodobljen.`);
+            log(LogType.SUCCESS, `Bug z ID ${id} uspesno posodobljen.`);
             res.json(updated);
         } catch (err) {
             log(LogType.ERROR, `Napaka pri posodabljanju napake (${id}): ${err.message}`);
@@ -106,7 +106,7 @@ module.exports = {
         try {
             const bug = await BugModel.getById(id);
             if (!bug) {
-                log(LogType.WARN, `Izbris neuspe\u0161en: Bug z ID ${id} ne obstaja.`);
+                log(LogType.WARN, `Izbris neuspesen: Bug z ID ${id} ne obstaja.`);
                 return res.status(404).json({ message: 'Bug not found' });
             }
 
