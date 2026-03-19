@@ -1,4 +1,4 @@
-# *Naziv tveganja*
+# *Nezavarovan prenos podatkov*
 
 
 ## 1. Zaznana varnostna napaka/pomankljivost
