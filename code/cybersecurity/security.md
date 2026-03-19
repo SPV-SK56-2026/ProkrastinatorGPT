@@ -20,4 +20,5 @@
 ---
 
 ## 3.1 Varnostne izboljšave
-* **External Scanners:** Automated bots looking for open ports or known vulnerabilities.
+* **Implementirana varna izmenjava podatkov**
+* **Implementiran JWT**: Omejitev dostopa do podatkov dejanskim uporabnikom
