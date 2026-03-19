@@ -1,4 +1,4 @@
-# *Naziv tveganja*
+# *Neobstoječa avtorizacija*
 
 
 ## 1. Zaznana varnostna napaka/pomankljivost
