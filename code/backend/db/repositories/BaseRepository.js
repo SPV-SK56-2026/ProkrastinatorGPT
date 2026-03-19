@@ -62,7 +62,7 @@ class BaseRepository {
 
     const sql = `
       UPDATE ${this.tableName}
-      SET ${setClause}, updated_at = NOW()
+      SET ${setClause}
       WHERE id = $${values.length}
       RETURNING *
     `;
