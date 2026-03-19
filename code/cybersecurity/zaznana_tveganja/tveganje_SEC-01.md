@@ -8,7 +8,7 @@
 ---
 
 ## 2.1 Potencialni napadalci
-* Hacker, ki želi dostop do podatkov:**
+* **Hacker, ki želi dostop do podatkov:**
 ---
 ### 2.2 Površina napada / Attack surface
 * **Backend**
