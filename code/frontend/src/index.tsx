@@ -20,7 +20,7 @@ const observer = new ResizeObserver(() => {
 observer.observe(document.body);
 
 function Index() {
-  const { currentAssignment, isLoading, error } = useApp();
+  const { currentAssignment, isLoading, error, toggleStep } = useApp();
   const [page, setPage] = useState("home");
   const icon = useIcon();
   const params = new URLSearchParams(window.location.search);
@@ -35,7 +35,17 @@ function Index() {
   if (page === "report") return <Report setPage={setPage} />;
   if (page === "tasks") return <TaskList setPage={setPage} />;
   if (page === "register") return <Register setPage={setPage} />;
-  if (error === "login" || page === "login") return <Login setPage={setPage} />;
+  if (page === "login" || error === "login") return <Login setPage={setPage} />;
+  if (error) return (
+    <div className="errorContainer">
+      <p className="errorMessage">{error === "login" ? "Za dostop se morate prijaviti." : error}</p>
+      {error !== "login" && (
+        <button className="btnSubmit" onClick={() => window.location.reload()}>
+          Poskusi ponovno
+        </button>
+      )}
+    </div>
+  );
   if (page === "forgot") return <ForgotPassword setPage={setPage} />;
   if (page === "change") return <ChangePassword setPage={setPage} />;
   if (page === "profile") return <Profile setPage={setPage} />;
@@ -50,10 +60,18 @@ function Index() {
         <div id="blueHolder">
           <div id="blueTextHolder">
             <p className="blueTitle">Potek reševanja</p>
-            <ul>
+            <ul className="interactiveSteps">
               {currentAssignment?.steps.map((step) => (
-                <li key={step.id}>
-                  <span dangerouslySetInnerHTML={{ __html: step.description }} />
+                <li key={step.id} className={step.isCompleted ? 'completed' : ''} onClick={() => toggleStep(step.id)}>
+                  <div className="stepContent">
+                    <input 
+                      type="checkbox" 
+                      checked={step.isCompleted} 
+                      onChange={() => {}} // Handle via li onClick
+                      className="stepCheckbox"
+                    />
+                    <span dangerouslySetInnerHTML={{ __html: step.description }} />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -67,7 +85,9 @@ function Index() {
             <img src={icon("barbell")} className="barbellIcon" alt="barbell" />
             <span>Težavnost</span>
           </div>
-          <div className="infoValue">{currentAssignment?.difficulty}</div>
+          <div className={`infoValue difficulty-${currentAssignment?.difficulty.split('/')[0]}`}>
+            {currentAssignment?.difficulty}
+          </div>
         </div>
         <div className="infoBlock">
           <div className="infoTitle">

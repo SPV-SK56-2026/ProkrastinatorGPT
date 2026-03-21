@@ -6,6 +6,7 @@ export interface AppContextType extends AppState {
   setUser: (user: User | null) => void;
   setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  toggleStep: (id: string) => void;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -45,6 +46,7 @@ export const useApp = () => {
       setUser: () => {},
       setIsLoading: () => {},
       setError: () => {},
+      toggleStep: () => {},
     } as AppContextType;
   }
   return context;

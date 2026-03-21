@@ -18,7 +18,7 @@ function TaskList({ setPage }: TaskListProps) {
     const fetchBugs = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/bug', {
+        const response = await fetch('https://www.goprokrastinator.org/bug', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
