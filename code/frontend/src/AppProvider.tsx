@@ -24,7 +24,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       try {
         setIsLoading(true);
 
-        const authCheck = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/user/check', {
+        const authCheck = await fetch('https://www.goprokrastinator.org/users/check', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -40,7 +40,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const pageDescription = params.get("description") || '';
         const pageTimeRemaining = params.get("timeRemaining") || '';
 
-        const response = await fetch('http://prokrastinatorgpt.ddns.net:5050/api/prompt/preprocess', {
+        if (!assignmentId || !pageDescription) {
+          setCurrentAssignment(mockAssignment);
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch('https://www.goprokrastinator.org/prompt/preprocess', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +64,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const data = await response.json();
         const raw = data.data;
 
-        const highlightOrange = (text: string, highlights: string[]): string => {
+        const highlightOrange = (text: string, highlights: string[] | undefined): string => {
+          if (!highlights) return text;
           let result = text;
           highlights.forEach(word => {
             result = result.replace(new RegExp(word, 'g'), `<span class="orangeText">${word}</span>`);
@@ -66,20 +73,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           return result;
         };
 
-        const highlightBlue = (text: string, highlight: string): string => {
+        const highlightBlue = (text: string, highlight: string | undefined): string => {
+          if (!highlight) return text;
           return text.replace(new RegExp(highlight, 'g'), `<span class="blueText">${highlight}</span>`);
         };
 
         const assignmentFromServer: Assignment = {
-          title: raw.naslov,
-          description: highlightOrange(raw.opis, raw.poudarki_opis),
-          steps: raw.koraki.map((k: any, i: number) => ({
-            id: String(i + 1),
-            description: highlightBlue(k.besedilo, k.poudarek),
-            isCompleted: false,
-          })),
-          difficulty: `${raw.tezavnost}/10`,
-          estimatedTime: `${raw.cas_min}–${raw.cas_max} ure`,
+          title: raw.naslov || raw.title || '',
+          description: highlightOrange(raw.opis || raw.explanation || '', raw.poudarki_opis),
+          steps: Array.isArray(raw.koraki)
+            ? raw.koraki.map((k: { besedilo: string; poudarek: string }, i: number) => ({
+                id: String(i + 1),
+                description: highlightBlue(k.besedilo, k.poudarek),
+                isCompleted: false,
+              }))
+            : raw.steps_text
+              ? raw.steps_text.split('\n').filter((line: string) => line.trim()).map((line: string, i: number) => ({
+                  id: String(i + 1),
+                  description: line.replace(/^\d+\.\s*/, ''),
+                  isCompleted: false,
+                }))
+              : [],
+          difficulty: `${raw.tezavnost || raw.difficulty || '?'}/10`,
+          estimatedTime: raw.cas_min && raw.cas_max
+            ? `${raw.cas_min}–${raw.cas_max} ure`
+            : raw.estimated_minutes
+              ? `${Math.round(raw.estimated_minutes / 60)} ure`
+              : 'Ni podatka',
         };
 
         setCurrentAssignment(assignmentFromServer);
@@ -96,6 +116,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     fetchData();
   }, []);
 
+  const toggleStep = (id: string) => {
+    if (!currentAssignment) return;
+    const newSteps = currentAssignment.steps.map(step => 
+      step.id === id ? { ...step, isCompleted: !step.isCompleted } : step
+    );
+    setCurrentAssignment({ ...currentAssignment, steps: newSteps });
+  };
+
   const value: AppContextType = {
     currentAssignment,
     user,
@@ -103,8 +131,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     error,
     setAssignment: setCurrentAssignment,
     setUser,
-    setIsLoading,
+    setIsLoading: setIsLoading,
     setError,
+    toggleStep,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

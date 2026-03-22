@@ -33,10 +33,27 @@ module.exports = {
 
             if (existingAssignment) {
                 log(LogType.INFO, `Naloga ${id} že obstaja.`);
+
+                // Pridobi tudi korake iz tabele responses
+                const responses = await responseRepository.getByAssignmentId(id);
+                const responseData = responses.length > 0 ? responses[0] : null;
+
+                // Če koraki manjkajo (response ni bil shranjen), ponovno analiziraj z AI
+                if (!responseData || !responseData.steps_text) {
+                    log(LogType.INFO, `Naloga ${id} nima korakov v bazi. Ponovna AI analiza.`);
+                    const fullMessage = `ROK: ${timeRemaining || 'Ni podano'}\n\nNAVODILA:\n${description}`;
+                    req.body.message = fullMessage;
+                    req.body.assignment_id = id;
+                    return module.exports.create(req, res);
+                }
+
                 return res.json({
                     success: true,
                     source: "database",
-                    data: existingAssignment
+                    data: {
+                        ...existingAssignment,
+                        steps_text: responseData.steps_text
+                    }
                 });
             }
 
@@ -127,7 +144,6 @@ RULES:
 
             // --- 1. SHRANJEVANJE V TABELO ASSIGNMENTS ---
             try {
-                log(LogType.ERROR, `Napaka pri shranjevanju Assignment: ${assignment_id}`);
                 await assignmentRepository.create({
                     id: assignment_id, // Uporabimo ID, ki ga je preprocess prejel iz req.body.id
                     title: aiData.naslov || "Nova naloga",

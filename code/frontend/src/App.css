@@ -136,6 +136,47 @@ ul {
   margin-bottom: 0;
 }
 
+.interactiveSteps {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.interactiveSteps li {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.interactiveSteps li:hover {
+  background-color: rgba(58, 47, 122, 0.05);
+}
+
+.interactiveSteps li.completed {
+  opacity: 0.6;
+}
+
+.interactiveSteps li.completed span {
+  text-decoration: line-through;
+}
+
+.stepContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stepCheckbox {
+  margin-top: 4px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #3A2F7A;
+}
+
 li {
   color: #221f20;
   padding-left: 0.3em;
@@ -642,3 +683,22 @@ li::marker {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.errorContainer {
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.errorMessage {
+  color: #D66328;
+  font-weight: bold;
+}
+
+.difficulty-1, .difficulty-2, .difficulty-3 { color: #28a745 !important; }
+.difficulty-4, .difficulty-5, .difficulty-6 { color: #ffc107 !important; }
+.difficulty-7, .difficulty-8 { color: #fd7e14 !important; }
+.difficulty-9, .difficulty-10 { color: #dc3545 !important; }

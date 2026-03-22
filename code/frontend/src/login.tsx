@@ -5,6 +5,7 @@ import PageHeader from './components/PageHeader'
 import FormInput from './components/FormInput'
 import PrimaryButton from './components/PrimaryButton'
 import { useIcon } from './useTheme';
+import type { User } from './types';
 
 const observer = new ResizeObserver(() => {
   window.parent.postMessage({ 
@@ -16,7 +17,7 @@ observer.observe(document.body);
 
 interface Props {
   setPage?: (page: string) => void;
-  setUser?: (user: any) => void;
+  setUser?: (user: User | null) => void;
 }
 
 function Login({ setPage, setUser }: Props) {
@@ -34,7 +35,7 @@ function Login({ setPage, setUser }: Props) {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('https://www.goprokrastinator.org/user/login', {
+      const response = await fetch('https://www.goprokrastinator.org/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
