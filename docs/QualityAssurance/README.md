@@ -433,7 +433,6 @@ Novi vnos je viden na seznamu.
 Dejanski rezultat:
 
 Novi vnos ni takoj prikazan.
-Bug report 26
 
 
 Dejanski rezultat:
