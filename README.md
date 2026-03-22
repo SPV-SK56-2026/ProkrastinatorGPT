@@ -74,17 +74,6 @@ koliko časa dejansko potrebuješ
 
 ---
 
-### 🤡 Anti-Overachiever modul
-
-Samodejno generira žaljivke za prijatelje, ki začnejo projekt prezgodaj:
-
-* “A si pe***?”
-* “*****"
-* “r*****”
-* “n****r”
-
----
-
 ## 🛠 Tehnologije
 
 Dejansko smo nekaj naredili:
